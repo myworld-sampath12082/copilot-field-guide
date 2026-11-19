@@ -1,0 +1,16 @@
+.copilot-azure/
+.azure/
+.env
+.env.*
+!.env.example
+/package-lock.json
+frontend/node_modules/
+frontend/dist/
+frontend/*.tsbuildinfo
+frontend/test-results/
+frontend/playwright-report/
+backend/target/
+backend/.mvn/wrapper/dists/
+backend/.mvn/wrapper/maven-temp/
+backend/.mvn/wrapper/maven.zip
+.local-data/

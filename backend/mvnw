@@ -1,0 +1,15 @@
+#!/bin/sh
+set -e
+if command -v mvn >/dev/null 2>&1; then
+  exec mvn "$@"
+fi
+MAVEN_VERSION=3.9.9
+DIST_DIR=".mvn/wrapper/dists/apache-maven-$MAVEN_VERSION"
+MAVEN_BIN="$DIST_DIR/bin/mvn"
+if [ ! -x "$MAVEN_BIN" ]; then
+  mkdir -p "$DIST_DIR"
+  ARCHIVE="/tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz"
+  curl -fL "https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz" -o "$ARCHIVE"
+  tar -xzf "$ARCHIVE" -C "$DIST_DIR" --strip-components=1
+fi
+exec "$MAVEN_BIN" "$@"
