@@ -25,8 +25,28 @@ export default function DeveloperLabPage() {
           <li>Keep database passwords, tokens, customer data, and unrelated private files out of prompts and attachments.</li>
           <li>Read the project instructions and verify every proposed command before allowing it to run.</li>
         </ul>
-        <p><strong>Prerequisites:</strong> Java 21, Node.js 24+ with npm, and Docker with Compose. Backend exercises require the local PostgreSQL/API stack.</p>
+        <p><strong>Prerequisites:</strong> Java 21, Node.js 24+ with npm, and Docker with Compose. Check the installed tools with <code>java -version</code>, <code>node --version</code>, <code>npm --version</code>, and <code>docker compose version</code>. Backend exercises require the local PostgreSQL/API stack.</p>
         <p>Install the prerequisites and start the local database/API using the steps in the <a href="https://github.com/sampath12082/copilot-field-guide/blob/main/README.md" target="_blank" rel="noreferrer">repository README</a>.</p>
+      </section>
+
+      <section className="lab-browser-path" aria-labelledby="lab-browser-path-heading">
+        <h2 id="lab-browser-path-heading">No local API yet? Start with a read-only source trace</h2>
+        <p>This browser-only preparation needs no Java, Node.js, Docker, or database. It helps you understand the example but cannot run or validate code and does not replace the implementation and test exercises.</p>
+        <ol>
+          <li>Read the <a href="https://github.com/sampath12082/copilot-field-guide/blob/main/overview.md" target="_blank" rel="noreferrer">API overview</a> and note the current task-list filters.</li>
+          <li>Trace <code>GET /api/tasks?topic=...</code> from the controller through the service and repository; compare the path with the focused controller test.</li>
+          <li>Write down the request parameter, the method that applies the filter, the response shape, and one behavior you cannot confirm without running the tests.</li>
+        </ol>
+        <p>
+          Source files:{' '}
+          <a href="https://github.com/sampath12082/copilot-field-guide/blob/main/backend/src/main/java/com/example/training/tasks/TrainingTaskController.java" target="_blank" rel="noreferrer">controller</a>
+          {' · '}
+          <a href="https://github.com/sampath12082/copilot-field-guide/blob/main/backend/src/main/java/com/example/training/tasks/TrainingTaskService.java" target="_blank" rel="noreferrer">service</a>
+          {' · '}
+          <a href="https://github.com/sampath12082/copilot-field-guide/blob/main/backend/src/main/java/com/example/training/tasks/TrainingTaskRepository.java" target="_blank" rel="noreferrer">repository</a>
+          {' · '}
+          <a href="https://github.com/sampath12082/copilot-field-guide/blob/main/backend/src/test/java/com/example/training/tasks/TrainingTaskControllerTest.java" target="_blank" rel="noreferrer">controller test</a>
+        </p>
       </section>
 
       <section className="lab-workflow" aria-labelledby="lab-workflow-heading">

@@ -7,6 +7,7 @@ A local React + TypeScript learning companion, Spring Boot API, and PostgreSQL t
 - The home page presents a focused course on Copilot app workflow and project setup; it is not a complete Copilot or enterprise-governance curriculum.
 - Each of the 16 lessons identifies its client/scope, links to current documentation, and includes a prompt, expected result, validation steps, a knowledge check, and source-slide references.
 - The **Hands-on lab** at `/lab` provides progressive local Java/Spring Boot exercises, a plan-specific privacy/governance check, a feature capstone, test-first regression practice, a security review rubric, and an explicit coverage/out-of-scope map.
+- A browser-only, read-only API trace is available on the lab page for learners who have not prepared the local stack; it does not replace code changes or running tests.
 - Lesson-check progress is saved in the current browser.
 - The original task board remains available at **Practice tracker** for creating tasks, checking off steps, saving notes, and tracking status.
 - Screenshots reused from the supplied presentation are historical references; their client/version/capture date is not always recorded. Current concepts use text-based diagrams and official documentation instead of presenting those screenshots as current UI instructions.
@@ -14,9 +15,10 @@ A local React + TypeScript learning companion, Spring Boot API, and PostgreSQL t
 
 ## Course feedback and scope
 
+- **Content reviewed:** November 20, 2026. This date matches the course homepage and lesson review indicator.
 - [Site feedback and remediation status](./docs/site-feedback.md)
-- [Example coverage audit](./docs/example-coverage-audit.md)
-- [November 20 site re-audit](./docs/site-reaudit-nov20-2026.md)
+- [Initial example-coverage baseline (45/100 snapshot)](./docs/example-coverage-audit.md)
+- [Earlier November 20 site re-audit (87/100 snapshot)](./docs/site-reaudit-nov20-2026.md)
 
 ## Free static deployment
 
@@ -57,6 +59,15 @@ This repository includes working examples of several setup-file topics:
 - Node.js 24+ and npm
 - Docker with Docker Compose
 
+Check the installed tools before starting:
+
+```powershell
+java -version
+node --version
+npm --version
+docker compose version
+```
+
 ## Start locally
 
 1. Start PostgreSQL:
@@ -96,7 +107,7 @@ This repository includes working examples of several setup-file topics:
 3. Start the frontend in another terminal:
 
    ```powershell
-   npm --prefix frontend install
+   npm --prefix frontend ci
    npm --prefix frontend run dev
    ```
 
@@ -114,7 +125,7 @@ cd backend
 Frontend:
 
 ```powershell
-npm --prefix frontend install
+npm --prefix frontend ci
 npm --prefix frontend test
 npm --prefix frontend run build
 ```

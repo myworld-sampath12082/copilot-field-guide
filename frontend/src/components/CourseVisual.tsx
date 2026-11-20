@@ -8,6 +8,29 @@ export default function CourseVisual({ visual }: Props) {
   return (
     <figure className="course-visual">
       <h2>{visual.title}</h2>
+      {visual.interfaceGuide && (
+        <section className="visual-interface-guide" aria-label={visual.interfaceGuide.title}>
+          <h3>{visual.interfaceGuide.title}</h3>
+          <ol className="visual-step-list">
+            {visual.interfaceGuide.steps.map((step, index) => (
+              <li className="visual-step" key={step.title}>
+                <span className="visual-step-number" aria-hidden="true">{index + 1}</span>
+                <strong>{step.title}</strong>
+                <span>{step.detail}</span>
+              </li>
+            ))}
+          </ol>
+          <p>
+            Current references:{' '}
+            {visual.interfaceGuide.references.map((reference, index) => (
+              <span key={reference.url}>
+                {index > 0 && ' · '}
+                <a href={reference.url} target="_blank" rel="noreferrer">{reference.label}</a>
+              </span>
+            ))}
+          </p>
+        </section>
+      )}
       {visual.kind === 'screenshots' && (
         <div className="visual-screenshots">
           {visual.images.map(image => (

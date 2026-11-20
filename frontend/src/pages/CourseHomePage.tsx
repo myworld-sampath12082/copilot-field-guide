@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { LessonSection, lessons, getSectionLessons } from '../data/course'
+import { courseReviewDate, LessonSection, lessons, getSectionLessons } from '../data/course'
 
 const sections: Array<{ name: LessonSection; introduction: string }> = [
   {
@@ -55,7 +55,7 @@ export default function CourseHomePage({ completedLessons }: { completedLessons:
         <div>
           <p className="eyebrow">Course scope</p>
           <h2 id="outcomes-heading">After this course, you can</h2>
-          <p>Audience: developers comfortable reading an existing repository and running its checks. The local lab uses Java 21, Node.js, and Docker. Content references reviewed November 20, 2026; confirm current behavior before applying organization-specific settings.</p>
+          <p>Audience: developers comfortable reading an existing repository and running its checks. The local lab uses Java 21, Node.js 24+, and Docker with Compose. Content references reviewed {courseReviewDate}; confirm current behavior before applying organization-specific settings.</p>
           <p className="scope-map-link"><Link to="/lab#coverage">See the complete topic map and explicit out-of-scope items.</Link></p>
         </div>
         <ul>

@@ -4,6 +4,8 @@ type LessonEnhancement = Pick<Lesson, 'surface' | 'resources' | 'exercise'>
 
 const docs = {
   agentSessions: 'https://docs.github.com/en/copilot/how-tos/github-copilot-app/agent-sessions',
+  vsCodeCodebaseExploration: 'https://code.visualstudio.com/docs/agents/guides/explore-a-codebase',
+  vsCodeChatView: 'https://code.visualstudio.com/docs/agents/run/chat-view',
   cloudSandboxes: 'https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-sandboxes',
   customEnvironments: 'https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/create-a-custom-environment',
   customInstructions: 'https://docs.github.com/en/copilot/reference/custom-instructions-support',
@@ -42,20 +44,23 @@ export const lessonEnhancements: Record<string, LessonEnhancement> = {
     }
   },
   'agent-selection': {
-    surface: 'Agent picker from the supplied presentation; its exact client/version is not identified, so role labels must be checked for the selected client.',
+    surface: 'VS Code Chat view roles and GitHub Copilot app session modes are separate client-specific controls; the source screenshot does not identify its client/version.',
     resources: resources(
-      ['GitHub Copilot app agent sessions', docs.agentSessions],
+      ['VS Code · explore a codebase without changing files', docs.vsCodeCodebaseExploration],
+      ['VS Code · use the Chat view', docs.vsCodeChatView],
+      ['GitHub Copilot app · agent sessions and modes', docs.agentSessions],
       ['Responsible use of agents', docs.responsibleAgents],
       ['Original slide 4 screenshot (historical; capture date unknown)', '/deck/slide-04.png']
     ),
     exercise: {
       title: 'Compare a read-only investigation with an edit request',
-      context: 'Use the existing `/api/tasks` implementation as a code-reading target. Select roles only when they are available in your client.',
-      prompt: 'Read TrainingTaskController, TrainingTaskService, TrainingTaskRepository, and their tests. Explain how GET /api/tasks?topic=... is handled, cite the files you used, and do not edit or run state-changing commands. Identify the read-only workflow and editing role available in this client, if any; do not assume the names Ask or Agent are universal.',
-      expected: 'A source-anchored explanation traces controller to service to repository and distinguishes reading from editing. It does not claim that every client has the same Ask or Agent role.',
+      context: 'Use the existing `/api/tasks` implementation as a code-reading target. The linked VS Code guide documents a specific Chat view flow; other Copilot clients use different controls.',
+      prompt: 'Follow the current VS Code codebase-exploration guide to trace how GET /api/tasks?topic=... is handled. Cite the controller, service, repository, and tests; do not edit files, install dependencies, or run project code. Identify the session target, agent role, and permission control the guide describes, and explain why the no-edit prompt is not a security boundary. If using the GitHub Copilot app instead, describe its session mode and tool-permission controls separately rather than mapping them to VS Code role names.',
+      expected: 'A source-anchored request trace and a client-specific control map. In VS Code, the cited guide uses the Chat view, Copilot session target, Agent role, and Manual permissions; it warns that a no-edit prompt is not a permission boundary and that Manual permissions may not require approval before every file edit. The Copilot app uses its own session modes and tool permissions, which are not VS Code role names.',
       validation: [
         'Check the explanation against the actual controller, service, repository, and tests.',
-        'Verify the selected role and available tools in the client before any edit.',
+        'Confirm the current session target, role, and permission controls in the selected client and account.',
+        'Check tool activity and compare repository status before and after; a no-edit prompt or Manual permissions does not guarantee that files cannot change.',
         'Use the exact endpoint behavior documented in overview.md as a cross-check.'
       ]
     }

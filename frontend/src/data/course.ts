@@ -29,7 +29,13 @@ export type LessonExercise = {
   validation: string[]
 }
 
-export type LessonVisual =
+type InterfaceGuide = {
+  title: string
+  steps: VisualStep[]
+  references: LessonResource[]
+}
+
+type LessonVisualContent =
   | {
       kind: 'steps'
       title: string
@@ -68,6 +74,10 @@ export type LessonVisual =
       images: Array<{ src: string; alt: string; label: string }>
       caption: string
     }
+
+export type LessonVisual = LessonVisualContent & {
+  interfaceGuide?: InterfaceGuide
+}
 
 export type Lesson = {
   slug: string
@@ -413,8 +423,8 @@ const lessonContent: LessonDraft[] = [
     section: 'Copilot workflow',
     title: 'Agent selection: choose a role for the task',
     shortTitle: 'Agent selection',
-    summary: 'Choose a supported read-only or editing role; names and capabilities vary by client.',
-    explanation: 'Agent roles and modes are client-specific. In a client that offers separate read-only and editing roles, use the read-only role to investigate without changing files and the editing role only when you want implementation. Other clients, including the GitHub Copilot app, may present different role or mode choices. Custom agents can add specialized instructions and tools, so inspect their configuration before relying on them.',
+    summary: 'Verify the supported role and controls in the selected client before investigating or editing.',
+    explanation: 'VS Code’s current codebase-exploration guide uses the Chat view with Copilot as the session target and Agent as the role. Its no-edit prompt is an instruction, not a permission boundary, and Manual permissions may not ask before every file edit; inspect tool activity and the Git diff. The GitHub Copilot app uses its own session modes and tool permissions, which should not be mapped to VS Code role names. Custom agents can add specialized instructions and tools, so inspect their configuration before relying on them.',
     scenario: {
       context: 'Illustrative scenario: first investigate a failing test, then decide whether a code change is needed.',
       youDo: 'Check the selected client’s current documentation and choose a read-only workflow for investigation. If you want implementation, choose a role that can edit and specify what should be changed.',
@@ -424,19 +434,35 @@ const lessonContent: LessonDraft[] = [
     caveat: 'The source screenshot does not identify its client or version. Role labels and behavior vary; do not assume Ask/Agent choices exist or behave the same way in every client. Role, session mode, and tool permissions are separate controls.',
     visual: {
       kind: 'comparison',
-      title: 'Choose a role based on the work and available tools',
+      title: 'Verify the workflow in the Copilot client you use',
       items: [
-        { title: 'Ask', detail: 'Use a supported read-only question/research role to inspect and explain before requesting edits.' },
-        { title: 'Agent', detail: 'Use an editing role only when the task needs file changes or commands and you can review the result.' },
+        { title: 'VS Code · Chat view', detail: 'The current exploration guide uses Copilot as the session target and Agent as the role. A no-edit prompt is not a permission boundary; inspect tool activity and the Git diff.' },
+        { title: 'GitHub Copilot app · session', detail: 'Interactive, Plan, and Autopilot are session modes; tool permissions are separate. Do not translate these mode labels into VS Code role names.' },
         { title: 'Custom profile', detail: 'A repository or user-defined agent may add specialized instructions and tools; inspect its configuration.' }
       ],
-      caption: 'Original concept diagram for readability. The slide 4 source screenshot is available as a historical reference; it does not identify its client/version.'
+      interfaceGuide: {
+        title: 'Current VS Code codebase-exploration path',
+        steps: [
+          { title: 'Open Chat', detail: 'Open the Chat view in VS Code and start a new chat for the repository you want to inspect.' },
+          { title: 'Check the session controls', detail: 'The documented exploration flow selects Copilot as the session target, Agent as the role, and Manual permissions; available options vary by account and policy.' },
+          { title: 'Verify the outcome', detail: 'A no-edit request is not a hard boundary. Review tool activity and compare the Git status/diff before and after the investigation.' }
+        ],
+        references: [
+          { label: 'VS Code · explore a codebase without changing files', url: 'https://code.visualstudio.com/docs/agents/guides/explore-a-codebase' },
+          { label: 'VS Code · use the Chat view', url: 'https://code.visualstudio.com/docs/agents/run/chat-view' }
+        ]
+      },
+      caption: 'Documentation-based client comparison, not a product screenshot. The slide 4 source image is historical and does not identify its client/version.'
     },
     check: {
-      question: 'According to the source slide, which named role is presented as read-only?',
-      options: ['Ask in the source slide’s client', 'Agent', 'A custom agent in every setup'],
-      correctAnswer: 0,
-      explanation: 'The source deck labels Ask as read-only; verify that this role and its tools exist in the client you use.'
+      question: 'What should you verify when following a no-edit code exploration workflow in VS Code?',
+      options: [
+        'The prompt and Manual permissions guarantee that no file can change.',
+        'The actual session controls and tool activity, then the repository diff for unintended changes.',
+        'That the GitHub Copilot app uses the same role names as VS Code.'
+      ],
+      correctAnswer: 1,
+      explanation: 'A no-edit prompt is an instruction, not a permission boundary, and Manual permissions do not necessarily ask before every file edit. Check the session controls, tool activity, and resulting diff.'
     },
     slides: [4]
   },
@@ -458,17 +484,33 @@ const lessonContent: LessonDraft[] = [
       kind: 'comparison',
       title: 'Current approval choices in the Copilot app',
       items: [
-        { title: 'Manual approval (Ask every time)', detail: 'Ask you before running a tool that requires approval.' },
-        { title: 'Assisted', detail: 'Approve eligible actions automatically and ask about actions that still need your decision.' },
-        { title: 'Unconditional approval (Approve all)', detail: 'Skip individual approval prompts for supported tools; this increases risk and does not override policy.' }
+        { title: 'Ask every time', detail: 'Ask before running each tool that requires approval.' },
+        { title: 'Assisted', detail: 'Approve requests judged safe and ask about potentially risky actions.' },
+        { title: 'Approve all', detail: 'Skip individual approval prompts for supported tools; product and organization restrictions still apply.' }
       ],
-      caption: 'Original explanatory diagram based on current documentation, not a product screenshot. The supplied slide uses historical labels; see the original image only as a source-deck reference.'
+      interfaceGuide: {
+        title: 'Where to find app-session tool permissions',
+        steps: [
+          { title: 'For one session', detail: 'Open the session control below the prompt, hover over Tool permissions, and select the available approval level.' },
+          { title: 'For future local sessions', detail: 'Open app settings, choose Sessions, then set the default under Tool permissions.' },
+          { title: 'Check policy limits', detail: 'Approval preferences do not grant blocked capabilities. Confirm the option is available and review each tool’s effects.' }
+        ],
+        references: [
+          { label: 'GitHub Copilot app · choosing tool permissions', url: 'https://docs.github.com/en/copilot/how-tos/github-copilot-app/agent-sessions' },
+          { label: 'Copilot policies', url: 'https://docs.github.com/en/copilot/how-tos/manage-your-account/manage-policies' }
+        ]
+      },
+      caption: 'Documentation-based app navigation, not a product screenshot. The supplied slide uses historical labels; verify current options and policy for your account.'
     },
     check: {
-      question: 'Which setting should you choose when you want to inspect each command before it runs?',
-      options: ['Approve all', 'Ask every time', 'Autopilot, because it changes tool permissions'],
+      question: 'If organization policy restricts a tool, what happens when you select Approve all?',
+      options: [
+        'Approve all overrides the organization restriction for this session.',
+        'The approval preference does not override policy; restricted actions can remain unavailable.',
+        'The restriction is applied only when using Plan mode.'
+      ],
       correctAnswer: 1,
-      explanation: 'Ask every time requests approval for each action that requires it. Session mode and tool approval are separate controls.'
+      explanation: 'Approve all skips individual approval prompts for supported tools; it does not grant capabilities blocked by product or organization policy. Use the least-permissive available setting and verify tool availability.'
     },
     slides: [5]
   },
@@ -523,11 +565,23 @@ const lessonContent: LessonDraft[] = [
     visual: {
       kind: 'screenshots',
       title: 'Model and Fusion controls shown in the presentation',
+      interfaceGuide: {
+        title: 'Current documented model-control path · GitHub Copilot app',
+        steps: [
+          { title: 'Choose a model or Fusion', detail: 'In an app session, use the model selector below the prompt. Fusion selects a model or execution pattern for each task.' },
+          { title: 'Select effort when offered', detail: 'Effort choices and availability depend on account and policy. After a Fusion response, hover over its effort label to inspect the models used.' },
+          { title: 'Know the VS Code Fast exception', detail: 'Fusion Fast is not selectable by users; it is only used in qualifying VS Code inline-chat scenarios.' }
+        ],
+        references: [
+          { label: 'GitHub Copilot app · session model and effort controls', url: 'https://docs.github.com/en/copilot/how-tos/github-copilot-app/agent-sessions' },
+          { label: 'Copilot Fusion · execution patterns and effort levels', url: 'https://docs.github.com/en/copilot/concepts/models/copilot-fusion' }
+        ]
+      },
       images: [
         { src: '/deck/slide-07-models.png', alt: 'Model picker showing Copilot Fusion and model choices, some marked as requiring an upgrade.', label: 'Slide 7 · Model picker' },
         { src: '/deck/slide-07-fusion.png', alt: 'Copilot Fusion settings showing Standard, High, and Max effort levels, with Standard selected.', label: 'Slide 7 · Fusion effort' }
       ],
-      caption: 'Historical source-deck screenshots; the capture date and client are unknown. Availability and controls vary, so use current documentation instead of copying the pictured UI.'
+      caption: 'The source-deck screenshots are historical; their capture date and client are unknown. The documented app flow above is separate and should not be inferred from those images.'
     },
     check: {
       question: 'What should you remember when using Copilot Fusion?',

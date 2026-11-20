@@ -55,6 +55,9 @@ test('every course topic includes its explanation, worked scenario, visual, prac
     await expect(page.locator('.scenario-steps dt')).toHaveText(['What you do', 'What Copilot may do', 'What to review'])
     await expect(page.locator('.course-visual')).toBeVisible()
     await expect(page.locator('.course-visual')).toHaveCSS('display', 'block')
+    if (['agent-selection', 'tool-permissions', 'models-and-fusion'].includes(slug)) {
+      await expect(page.locator('.visual-interface-guide')).toBeVisible()
+    }
     const comparison = page.locator('.course-visual .visual-comparison')
     if (await comparison.count()) {
       await expect(comparison).toHaveCSS('display', 'grid')

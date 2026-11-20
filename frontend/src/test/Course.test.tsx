@@ -5,7 +5,7 @@ import CourseHomePage from '../pages/CourseHomePage'
 import DeveloperLabPage from '../pages/DeveloperLabPage'
 import LessonPage from '../pages/LessonPage'
 import SlideIndexPage from '../pages/SlideIndexPage'
-import { lessons } from '../data/course'
+import { courseReviewDate, lessons } from '../data/course'
 import { labExercises } from '../data/lab'
 
 test('presents the learning path as the main experience', () => {
@@ -16,6 +16,7 @@ test('presents the learning path as the main experience', () => {
   expect(screen.getByRole('heading', { name: 'Copilot workflow' })).toBeInTheDocument()
   expect(screen.getByRole('link', { name: 'Open practice tracker' })).toHaveAttribute('href', '/practice')
   expect(screen.getByRole('link', { name: 'Open the hands-on lab' })).toHaveAttribute('href', '/lab')
+  expect(screen.getByText(new RegExp(`Content references reviewed ${courseReviewDate}`))).toBeInTheDocument()
 })
 
 test('a correct knowledge check marks its lesson complete and includes its source reference', () => {
@@ -78,11 +79,68 @@ test('applied exercises distinguish client syntax, isolate regression behavior, 
   expect(setupExercise?.prompt).toContain('Run B:')
 })
 
+test('agent selection distinguishes current VS Code controls from Copilot app modes', () => {
+  render(
+    <MemoryRouter initialEntries={['/learn/agent-selection']}>
+      <Routes>
+        <Route path="/learn/:slug" element={<LessonPage completedLessons={[]} onComplete={vi.fn()} />} />
+      </Routes>
+    </MemoryRouter>
+  )
+
+  const explorationLinks = screen.getAllByRole('link', { name: 'VS Code · explore a codebase without changing files' })
+  expect(explorationLinks).toHaveLength(2)
+  expect(explorationLinks[0]).toHaveAttribute(
+    'href',
+    'https://code.visualstudio.com/docs/agents/guides/explore-a-codebase'
+  )
+  expect(screen.getByText(/Copilot session target, Agent role, and Manual permissions/i)).toBeInTheDocument()
+  expect(screen.getAllByText(/not a permission boundary/i).length).toBeGreaterThan(0)
+})
+
+test('the tool-permissions quiz explicitly checks that policy restrictions still apply', () => {
+  render(
+    <MemoryRouter initialEntries={['/learn/tool-permissions']}>
+      <Routes>
+        <Route path="/learn/:slug" element={<LessonPage completedLessons={[]} onComplete={vi.fn()} />} />
+      </Routes>
+    </MemoryRouter>
+  )
+
+  expect(screen.getByRole('heading', { name: 'Where to find app-session tool permissions' })).toBeInTheDocument()
+  fireEvent.click(screen.getByRole('radio', { name: /approval preference does not override policy/i }))
+  fireEvent.click(screen.getByRole('button', { name: 'Check answer' }))
+
+  expect(screen.getByRole('status')).toHaveTextContent('does not grant capabilities blocked by product or organization policy')
+})
+
+test('the model lesson separates current app controls from historical screenshots', () => {
+  render(
+    <MemoryRouter initialEntries={['/learn/models-and-fusion']}>
+      <Routes>
+        <Route path="/learn/:slug" element={<LessonPage completedLessons={[]} onComplete={vi.fn()} />} />
+      </Routes>
+    </MemoryRouter>
+  )
+
+  expect(screen.getByRole('heading', { name: 'Current documented model-control path · GitHub Copilot app' })).toBeInTheDocument()
+  expect(screen.getByRole('link', { name: 'Copilot Fusion · execution patterns and effort levels' })).toHaveAttribute(
+    'href',
+    'https://docs.github.com/en/copilot/concepts/models/copilot-fusion'
+  )
+  expect(screen.getByText(/source-deck screenshots are historical/i)).toBeInTheDocument()
+})
+
 test('the hands-on lab covers the coding capstone and explicit course scope', () => {
   render(<MemoryRouter><DeveloperLabPage /></MemoryRouter>)
 
   expect(screen.getByRole('heading', { name: 'From prompt to reviewed change' })).toBeInTheDocument()
   expect(screen.getByText(/Java 21, Node\.js 24\+ with npm, and Docker with Compose/i)).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'No local API yet? Start with a read-only source trace' })).toBeInTheDocument()
+  expect(screen.getByRole('link', { name: 'controller' })).toHaveAttribute(
+    'href',
+    'https://github.com/sampath12082/copilot-field-guide/blob/main/backend/src/main/java/com/example/training/tasks/TrainingTaskController.java'
+  )
   expect(screen.getByRole('heading', { name: 'End-to-end capstone' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Check policy before sharing context or granting access' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Check data handling and access policy before prompting' })).toBeInTheDocument()

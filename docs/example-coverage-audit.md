@@ -4,6 +4,8 @@
 **Material reviewed:** Home page, slide reference page, 16 lesson pages, their visible captions/alt text, scenario cards, checks for understanding, and internal links.\
 **Scope note:** This audit classifies what the published site actually teaches. Its scenarios are not counted as reproducible labs unless they include usable instructions, a prompt/workflow, an expected result, and validation. The lesson pages link to presentation screenshots; the source image for slide 3 was visually sampled, but image-only text in all 17 slide PNGs was not OCR-verified. Where a page claims a specific demo-app architecture, the site alone does not let me independently verify that claim against its source code.
 
+> Historical baseline: the 45/100 score below predates the later November 20 re-audits. See [current remediation status](./site-feedback.md) for the later findings and changes.
+
 ## 1. Executive result
 
 The course contains two modules with eight lessons each: **Copilot workflow** and **Project setup**. Every lesson has a short scenario and a multiple-choice check. That gives learners a useful conceptual pass, but nearly all existing examples are **E1 – Basic example**. None reaches E2 because the learner is not given a complete prompt, concrete output, and reproducible validation. None reaches E3 or E4.

@@ -27,7 +27,7 @@ The environment lesson now distinguishes local work, GitHub-hosted Cloud sandbox
 
 ## November 20, 2026 re-audit follow-up
 
-The full follow-up report is archived in [site-reaudit-nov20-2026.md](./site-reaudit-nov20-2026.md). Its three requested exercise refinements are addressed:
+The earlier follow-up report is archived in [site-reaudit-nov20-2026.md](./site-reaudit-nov20-2026.md); its score is an earlier 87/100 snapshot. The attached later re-audit rated the current course 91/100 and identified additional opportunities around interface verification, setup friction, and date synchronization. Its attachment remains unchanged.
 
 - [x] Make the regression red/green path a notes-only PUT with the unchanged checklist, a separate status-only PATCH control, and a distinct checklist-change reset case.
 - [x] Separate VS Code Chat syntax/documentation from GitHub Copilot app-only references and commands; do not imply shared support for `@participants`.
@@ -39,6 +39,24 @@ The screenshot feedback also uncovered a related layout issue: `CourseVisual` ga
 **Validation:** frontend unit tests passed (7 tests), production build passed, and four targeted Playwright checks passed both locally and against the deployed URL (navigation, every lesson route, mobile layout, and API-free public pages). A 763 px browser check confirmed the comparison heading, cards, and caption stack without overlap while the inner comparison remains a grid. The full tracker E2E suite was not run because its local PostgreSQL/API stack was not running.
 
 **Publication:** refinements are live at [https://copilot-field-guide.pages.dev](https://copilot-field-guide.pages.dev); the tablet-width layout was checked on the published site.
+
+## November 20, 2026 score-improvement follow-up
+
+The latest 91/100 review's actionable notes are addressed in the course:
+
+- [x] Use the shared `courseReviewDate` on the homepage and synchronize the date in this README with the lesson, slide, and lab indicators.
+- [x] Add current VS Code codebase-exploration and Chat-view references, with a precise comparison to the GitHub Copilot app's session modes and tool permissions.
+- [x] Update the tool-permissions knowledge check to verify that `Approve all` does not override product or organization policy.
+- [x] Add documentation-based current interface paths for VS Code exploration, app tool permissions, and model/Fusion controls while keeping the supplied screenshots labeled as historical.
+- [x] Provide a browser-only, read-only API trace for learners who have not prepared the local stack; add exact local prerequisite checks and use `npm ci` for a reproducible frontend install.
+
+The browser-only route is explicitly preparation, not a substitute for code changes or test execution. Product availability still depends on the selected client, plan, and organization policy; the course does not claim to cover every Copilot interface.
+
+**Validation:** frontend unit tests passed (10 tests) and the production build passed. Six targeted Playwright checks passed against the local production preview; four passed against the final stable deployment for navigation, all 16 lesson routes and visual assets, mobile layout, and API-free public course pages. The knowledge-check/progress test also passed against the live URL after an initial transient timeout. The backend-dependent tracker E2E suite was not run because the local PostgreSQL/API stack was not running.
+
+**Publication:** live at [https://copilot-field-guide.pages.dev](https://copilot-field-guide.pages.dev); final deployment preview: [https://a2aead24.copilot-field-guide.pages.dev](https://a2aead24.copilot-field-guide.pages.dev). The newly added client-specific diagrams and browser-only lab path were confirmed on the published site.
+
+All concrete deductions in the 91/100 review have been addressed. The original attachment remains unchanged; only a fresh independent review can confirm a new numeric score, including 100/100.
 
 ## Audit report
 

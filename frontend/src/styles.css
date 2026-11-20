@@ -225,7 +225,7 @@ button, input, textarea, select { font: inherit; }
 .slide-next-steps .button-primary { color: #123766; background: #fff; }
 .lab-intro { max-width: 860px; }
 .lab-intro .button-link { margin-top: 8px; }
-.lab-safety, .lab-workflow, .lab-command-card, .lab-governance, .lab-assessment, .lab-measurement, .lab-coverage {
+.lab-safety, .lab-browser-path, .lab-workflow, .lab-command-card, .lab-governance, .lab-assessment, .lab-measurement, .lab-coverage {
   margin: 0 0 24px;
   padding: 22px;
   border: 1px solid #d5dfeb;
@@ -233,9 +233,10 @@ button, input, textarea, select { font: inherit; }
   background: #fff;
 }
 .lab-safety { border-left: 5px solid #b87015; background: #fffaf0; }
+.lab-browser-path { border-left: 5px solid #3479a2; background: #f3f8fd; }
 .lab-workflow { border-top: 4px solid #3479a2; }
 .lab-governance { border-left: 5px solid #526c8c; background: #f7f9fc; }
-.lab-safety h2, .lab-workflow h2, .lab-command-card h2, .lab-governance h2, .lab-section-heading h2, .lab-assessment h2, .lab-measurement h2, .lab-coverage h2 {
+.lab-safety h2, .lab-browser-path h2, .lab-workflow h2, .lab-command-card h2, .lab-governance h2, .lab-section-heading h2, .lab-assessment h2, .lab-measurement h2, .lab-coverage h2 {
   margin: 0 0 10px;
   color: #1b3555;
   font-size: 22px;
@@ -249,11 +250,21 @@ button, input, textarea, select { font: inherit; }
   font-size: 14px;
   line-height: 1.55;
 }
-.lab-safety p, .lab-workflow p, .lab-command-card p, .lab-governance p, .lab-section-heading > p:last-child, .lab-assessment p, .lab-measurement p, .lab-coverage > p:last-of-type {
+.lab-safety p, .lab-browser-path p, .lab-workflow p, .lab-command-card p, .lab-governance p, .lab-section-heading > p:last-child, .lab-assessment p, .lab-measurement p, .lab-coverage > p:last-of-type {
   color: #40536c;
   font-size: 14px;
   line-height: 1.6;
 }
+.lab-browser-path ol {
+  display: grid;
+  gap: 7px;
+  margin: 12px 0;
+  padding-left: 22px;
+  color: #40536c;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.lab-browser-path > p:last-child { margin-bottom: 0; }
 .lab-workflow ol {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -482,6 +493,16 @@ button, input, textarea, select { font: inherit; }
 .course-visual > h2 { margin: 0 0 16px; color: #1b3555; font-size: 19px; line-height: 1.35; }
 .course-visual figcaption { margin-top: 14px; color: #53647b; font-size: 13px; line-height: 1.5; }
 .visual-screenshots { display: grid; gap: 18px; }
+.visual-interface-guide {
+  margin: 0 0 16px;
+  padding: 16px;
+  border: 1px solid #c8d9eb;
+  border-radius: 9px;
+  background: #f3f8fd;
+}
+.visual-interface-guide h3 { margin: 0 0 12px; color: #18395f; font-size: 16px; line-height: 1.4; }
+.visual-interface-guide .visual-step-list { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: 12px; }
+.visual-interface-guide > p { margin: 0; color: #465a72; font-size: 13px; line-height: 1.55; }
 .visual-screenshot { min-width: 0; }
 .visual-screenshot img {
   width: 100%;
@@ -743,7 +764,7 @@ button, input, textarea, select { font: inherit; }
   .learning-outcomes ul { grid-template-columns: 1fr; }
   .current-documents ul { display: grid; }
   .slide-next-steps { padding: 16px; }
-  .lab-safety, .lab-workflow, .lab-command-card, .lab-governance, .lab-assessment, .lab-measurement, .lab-coverage, .lab-exercise-card { padding: 16px; }
+  .lab-safety, .lab-browser-path, .lab-workflow, .lab-command-card, .lab-governance, .lab-assessment, .lab-measurement, .lab-coverage, .lab-exercise-card { padding: 16px; }
   .lab-workflow ol, .lab-assessment-grid, .lab-coverage li { grid-template-columns: 1fr; }
   .learning-intro h2, .course-section-header h2 { font-size: 22px; }
   .lesson-card-grid { grid-template-columns: 1fr; }
@@ -780,6 +801,7 @@ button, input, textarea, select { font: inherit; }
   .lesson-explanation h2, .scenario-card h2, .knowledge-check h2 { font-size: 20px; }
   .course-visual, .scenario-card, .knowledge-check, .slide-references, .applied-exercise, .lesson-resources { padding: 16px; }
   .visual-step-list, .visual-comparison, .visual-architecture { grid-template-columns: 1fr; }
+  .visual-interface-guide .visual-step-list { grid-template-columns: 1fr; }
   .visual-step { min-height: auto; }
   .visual-architecture { gap: 18px; }
   .visual-architecture li + li::before { content: "↓"; left: 50%; top: -19px; font-size: 17px; }
