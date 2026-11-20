@@ -36,7 +36,9 @@ The full follow-up report is archived in [site-reaudit-nov20-2026.md](./site-rea
 
 The screenshot feedback also uncovered a related layout issue: `CourseVisual` gave its outer `<figure>` the same `visual-comparison` class as the inner comparison grid, causing the figure heading, cards, and caption to become grid columns at tablet widths. The wrapper now has its own `course-visual` class, and browser coverage asserts the figure stays block-level while the comparison content remains a grid.
 
-**Validation:** frontend unit tests passed (7 tests), production build passed, and four targeted Playwright checks passed (navigation, every lesson route, mobile layout, and API-free public pages). A tablet-width browser check at 763 px confirmed the comparison heading, cards, and caption stack without overlap while the inner comparison remains a grid. The full tracker E2E suite was not run because its local PostgreSQL/API stack was not running.
+**Validation:** frontend unit tests passed (7 tests), production build passed, and four targeted Playwright checks passed both locally and against the deployed URL (navigation, every lesson route, mobile layout, and API-free public pages). A 763 px browser check confirmed the comparison heading, cards, and caption stack without overlap while the inner comparison remains a grid. The full tracker E2E suite was not run because its local PostgreSQL/API stack was not running.
+
+**Publication:** refinements are live at [https://copilot-field-guide.pages.dev](https://copilot-field-guide.pages.dev); the tablet-width layout was checked on the published site.
 
 ## Audit report
 
