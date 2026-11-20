@@ -58,6 +58,12 @@ The browser-only route is explicitly preparation, not a substitute for code chan
 
 All concrete deductions in the 91/100 review have been addressed. The original attachment remains unchanged; only a fresh independent review can confirm a new numeric score, including 100/100.
 
+## Slash-command exercise follow-up
+
+The first guided lab exercise now separates a two-command VS Code workflow (`/explain` on the active method and `/tests` on the selected method) from GitHub Copilot app commands (`/plan` and `/review`). It asks learners to check the installed VS Code command picker, keep the generated test as a proposal, and perform the unrelated inline-suggestion activity on a disposable branch. References point to the VS Code-specific command cheat sheet and the app-only command documentation.
+
+**Validation:** frontend unit tests passed (10 tests); production TypeScript/Vite build passed.
+
 ## Audit report
 
 ### Audit scope and date

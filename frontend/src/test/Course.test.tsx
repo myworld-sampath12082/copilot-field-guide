@@ -66,7 +66,14 @@ test('applied exercises distinguish client syntax, isolate regression behavior, 
   const promptExercise = labExercises[0]
   expect(promptExercise.references?.some(reference => reference.label.startsWith('VS Code Chat'))).toBe(true)
   expect(promptExercise.references?.filter(reference => reference.label.includes('app-only'))).toHaveLength(2)
-  expect(promptExercise.prompt).toContain('do not transfer that syntax to VS Code')
+  expect(promptExercise.references?.some(reference => reference.url.endsWith('chat-cheat-sheet?tool=vscode'))).toBe(true)
+  expect(promptExercise.prompt).toContain('invoke `/explain`')
+  expect(promptExercise.prompt).toContain('invoke `/tests`')
+  expect(promptExercise.prompt).toContain('`/plan`')
+  expect(promptExercise.prompt).toContain('`/review`')
+  expect(promptExercise.prompt).toContain('Do not use those app commands as if they were VS Code commands.')
+  expect(promptExercise.expected).toContain('proposed JUnit 5 test without editing files')
+  expect(promptExercise.validation).toContain('Type `/` in VS Code Chat and confirm the current command list; command availability can vary by client version and context.')
 
   const regressionExercise = labExercises.find(exercise => exercise.title.includes('checklist-state regression'))
   expect(regressionExercise?.prompt).toContain('notes-only PUT')

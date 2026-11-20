@@ -19,18 +19,19 @@ export const labExercises: LabExercise[] = [
     title: 'Prompt, reference context, and steer an inline suggestion',
     level: 'Guided',
     surface: 'VS Code Copilot Chat and inline suggestions; use only features available in your installed version.',
-    context: 'Open TrainingTaskService.java and its focused tests. Keep the task read-only until you understand the method.',
-    prompt: 'In VS Code Chat, consult the linked VS Code documentation, reference TrainingTaskService.java and its focused test using the context syntax supported there, and use only a slash command shown by that client. Explain how updateStatus validates and persists a status change, cite the controller/service/test files, and identify one uncovered boundary case. Do not edit files. Separately, if you also use the GitHub Copilot app, check its app-only documentation for its own file, issue, and slash-command syntax; do not transfer that syntax to VS Code or assume @participants is supported. Finally, request a small inline suggestion and accept, partially accept, or dismiss it; use Inline Chat/Edit only if the installed VS Code version supports it.',
-    expected: 'A source-anchored explanation, one test gap, and a clear separation between VS Code #context references and slash commands versus GitHub Copilot app @file/#issue references and app commands. The learner verifies each feature in its own documentation and reviews every accepted suggestion or edit.',
+    context: 'Open TrainingTaskService.java and its focused tests. Keep the slash-command investigation read-only; use a disposable branch for the separate inline-suggestion activity.',
+    prompt: 'In VS Code Chat, type `/` and confirm the installed client offers `/explain` and `/tests`; if a command is absent, note that and consult the VS Code-specific references below instead of substituting a Copilot app command. Stay in a read-only chat workflow. Step 1: open TrainingTaskService.java, place the cursor in updateStatus, invoke `/explain`, and ask: “Explain how this method validates and persists a status change. Trace the controller-to-service path, cite the relevant test, identify one uncovered boundary case, and do not edit files.” Step 2: select the method, invoke `/tests`, and ask: “Suggest one focused JUnit 5 test for the boundary case identified above. Show the test code as a proposal only; do not edit files or run commands.” After recording both slash-command responses, switch to a disposable branch for the separate inline-suggestion activity: request a harmless documentation suggestion, then accept, partially accept, or dismiss it; use Inline Chat/Edit only if the installed VS Code version supports it and inspect or revert any edit. Separately, the GitHub Copilot app has its own commands—for example, `/plan` starts a plan in an app session and `/review` reviews session changes. Do not use those app commands as if they were VS Code commands.',
+    expected: 'The `/explain` and `/tests` steps produce a source-anchored method explanation and a proposed JUnit 5 test without editing files. The learner can state that `/explain` uses active code context to explain it, while `/tests` uses selected code to propose unit tests. The learner verifies command availability in the VS Code picker and distinguishes app-session commands from IDE commands. The later inline suggestion is handled on a disposable branch and reviewed or reverted.',
     validation: [
-      'Trace the route through TrainingTaskController, TrainingTaskService, and the relevant test.',
-      'Use VS Code documentation for VS Code context references and slash commands; treat Copilot app references and commands as app-only.',
-      'Do not assume @participants, #references, or identical slash commands exist across clients; verify the exact syntax before using it.',
-      'Compare the explanation with the code and reject any unsupported claim.',
+      'Type `/` in VS Code Chat and confirm the current command list; command availability can vary by client version and context.',
+      'Trace the explanation through TrainingTaskController, TrainingTaskService, and the relevant test; reject claims unsupported by source.',
+      'Check that the proposed test asserts observable behavior and matches the repository test conventions; keep it as a proposal for this read-only exercise.',
+      'If you later add the test to the repository, inspect it and run the focused backend test before relying on it.',
+      'Use the app-only reference to verify `/plan` and `/review`; do not transfer those commands across clients.',
       'Inspect every accepted suggestion or inline edit in the diff; dismiss or revert inaccurate or unnecessary changes.'
     ],
     references: [
-      { label: 'Responsible use of inline suggestions', url: 'https://docs.github.com/en/copilot/responsible-use/inline-suggestions' },
+      { label: 'VS Code Copilot Chat slash-command cheat sheet', url: 'https://docs.github.com/en/copilot/reference/chat-cheat-sheet?tool=vscode' },
       { label: 'VS Code Chat, slash commands, and context', url: 'https://code.visualstudio.com/docs/chat/chat-overview' },
       { label: 'GitHub Copilot app-only sessions and slash commands', url: 'https://docs.github.com/en/copilot/how-tos/github-copilot-app/agent-sessions' },
       { label: 'GitHub Copilot app-only slash command reference', url: 'https://docs.github.com/en/copilot/reference/github-copilot-app-reference/slash-commands' }
