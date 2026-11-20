@@ -21,9 +21,9 @@ The course now has client-specific surface notes and official references across 
 
 The environment lesson now distinguishes local work, GitHub-hosted Cloud sandboxes, Actions jobs, user-managed custom environments, and separate remote IDE/tunnel workflows. The privacy checkpoint separately checks model-training settings, public-code matching, repository access, and tool permissions. Its plan-specific wording reflects the policy documentation reviewed for this audit date; learners are directed to verify their own current settings.
 
-**Validation:** frontend unit tests passed (6 tests); production build passed; six Playwright browser checks passed for navigation, lesson/slide links, mobile layout, course routes, and the absence of `/api` requests from public course pages. The full tracker E2E suite was not run because its local PostgreSQL/API stack was not running.
+**Validation:** frontend unit tests passed (6 tests); production build passed; six Playwright browser checks passed against the deployed URL for navigation, lesson/slide links, all lesson routes, mobile layout, and the absence of `/api` requests from public course pages. A separate production-browser check confirmed `/practice` displays the local-only notice and makes no `/api` requests. The full tracker E2E suite was not run because its local PostgreSQL/API stack was not running.
 
-**Publication:** changes are pending deployment until final repository and Cloudflare checks are complete.
+**Publication:** deployed to Cloudflare Pages Free at [https://copilot-field-guide.pages.dev](https://copilot-field-guide.pages.dev). The public site remains course-only; the Java API and PostgreSQL are not hosted.
 
 ## Audit report
 
