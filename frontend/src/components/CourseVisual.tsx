@@ -6,7 +6,7 @@ type Props = {
 
 export default function CourseVisual({ visual }: Props) {
   return (
-    <figure className={`course-visual visual-${visual.kind}`}>
+    <figure className="course-visual">
       <h2>{visual.title}</h2>
       {visual.kind === 'screenshots' && (
         <div className="visual-screenshots">

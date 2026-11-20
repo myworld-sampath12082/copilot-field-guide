@@ -20,18 +20,20 @@ export const labExercises: LabExercise[] = [
     level: 'Guided',
     surface: 'VS Code Copilot Chat and inline suggestions; use only features available in your installed version.',
     context: 'Open TrainingTaskService.java and its focused tests. Keep the task read-only until you understand the method.',
-    prompt: 'Check the documentation for this client. If supported, use a file reference to TrainingTaskService.java and one slash command to ask about the current workspace; identify whether @participants or #references are available as well. If a feature is unavailable, state that instead of guessing. Explain how updateStatus validates and persists a status change, cite the controller/service/test files, and identify one uncovered boundary case. Do not edit files. Then request a small inline suggestion and let me accept, partially accept, or dismiss it. If this client supports Inline Chat/Edit, ask it to propose a comment-only change and wait for review before applying it.',
-    expected: 'A source-anchored explanation, one test gap, and a visible distinction between chat references, slash commands, inline completion, and chat-driven edits. The learner verifies each syntax in the selected client and decides whether to keep each suggestion.',
+    prompt: 'In VS Code Chat, consult the linked VS Code documentation, reference TrainingTaskService.java and its focused test using the context syntax supported there, and use only a slash command shown by that client. Explain how updateStatus validates and persists a status change, cite the controller/service/test files, and identify one uncovered boundary case. Do not edit files. Separately, if you also use the GitHub Copilot app, check its app-only documentation for its own file, issue, and slash-command syntax; do not transfer that syntax to VS Code or assume @participants is supported. Finally, request a small inline suggestion and accept, partially accept, or dismiss it; use Inline Chat/Edit only if the installed VS Code version supports it.',
+    expected: 'A source-anchored explanation, one test gap, and a clear separation between VS Code #context references and slash commands versus GitHub Copilot app @file/#issue references and app commands. The learner verifies each feature in its own documentation and reviews every accepted suggestion or edit.',
     validation: [
       'Trace the route through TrainingTaskController, TrainingTaskService, and the relevant test.',
-      'Confirm slash commands, @participants, #references, and file-reference syntax in documentation for the selected client.',
+      'Use VS Code documentation for VS Code context references and slash commands; treat Copilot app references and commands as app-only.',
+      'Do not assume @participants, #references, or identical slash commands exist across clients; verify the exact syntax before using it.',
       'Compare the explanation with the code and reject any unsupported claim.',
       'Inspect every accepted suggestion or inline edit in the diff; dismiss or revert inaccurate or unnecessary changes.'
     ],
     references: [
       { label: 'Responsible use of inline suggestions', url: 'https://docs.github.com/en/copilot/responsible-use/inline-suggestions' },
-      { label: 'VS Code Copilot Chat and context', url: 'https://code.visualstudio.com/docs/copilot/chat/copilot-chat' },
-      { label: 'GitHub Copilot app slash commands', url: 'https://docs.github.com/en/copilot/reference/github-copilot-app-reference/slash-commands' }
+      { label: 'VS Code Chat, slash commands, and context', url: 'https://code.visualstudio.com/docs/chat/chat-overview' },
+      { label: 'GitHub Copilot app-only sessions and slash commands', url: 'https://docs.github.com/en/copilot/how-tos/github-copilot-app/agent-sessions' },
+      { label: 'GitHub Copilot app-only slash command reference', url: 'https://docs.github.com/en/copilot/reference/github-copilot-app-reference/slash-commands' }
     ]
   },
   {
@@ -56,14 +58,14 @@ export const labExercises: LabExercise[] = [
     title: 'Reproduce and debug a checklist-state regression test-first',
     level: 'Hands-on',
     surface: 'Local Java/Spring Boot repository in a disposable Git worktree; never make the intentionally broken change on a shared branch.',
-    context: 'The repository currently preserves completed checklist items when notes or status change, and resets them only when the checklist changes. This exercise uses that existing invariant; it does not claim that the published baseline has the bug. Use test output or sanitized logs; never paste credentials or personal data.',
-    prompt: 'In this disposable worktree, add a focused regression test proving that a notes-only or status-only update preserves a completed checklist index, while replacing the checklist resets completion. Run the focused test and inspect its sanitized failure output or local backend logs; trace the evidence through TrainingTaskService.update without treating a stack trace as proof of the root cause. To demonstrate a red/green cycle, temporarily introduce an unconditional clear of completed steps, confirm the new test fails, then ask for the smallest fix that restores the invariant. Remove the temporary mutation before finishing; do not commit it.',
-    expected: 'The learner records the observed assertion or sanitized log evidence, distinguishes it from the root-cause hypothesis, and traces the affected service path. The regression test passes on the correct baseline, fails against the temporary mutation, and passes again after restoring conditional reset behavior. The final diff contains no intentional defect.',
+    context: 'The service preserves completed checklist items when a PUT update keeps the checklist unchanged, resets completion when the checklist changes, and handles status-only PATCH in a separate method. A PUT update must include the existing steps to isolate a notes-only change. This exercise uses the current invariant; it does not claim that the published baseline has the bug.',
+    prompt: 'In this disposable worktree, add three focused tests: (1) a notes-only PUT sends the task’s unchanged title, topic, objective, steps, and status plus changed notes, and preserves a completed checklist index; (2) a status-only PATCH preserves the same completed index as a control; and (3) a PUT that replaces the checklist resets completion. Run all three against the current implementation. Then temporarily change TrainingTaskService.update to clear completed steps unconditionally on every PUT, and rerun the tests: the notes-only PUT must fail, the status-only PATCH control must still pass because it uses updateStatus, and the changed-checklist case must pass. Record the failing assertion and trace the behavior through the controller and service. Restore the original conditional reset, rerun the tests, verify all pass, and do not commit the temporary mutation.',
+    expected: 'On the baseline, all three tests pass. With the temporary mutation, only the notes-only PUT preservation test fails; the status-only PATCH control still passes and changing the checklist still resets completion. After restoring the conditional reset, all tests pass. The final diff contains tests only and no intentional defect.',
     validation: [
       'Create and work only in a disposable branch/worktree.',
-      'Record the failing assertion before the fix and the passing test after it.',
-      'Inspect TrainingTaskService.update and confirm completion resets only when the checklist changes.',
-      'Run the full backend suite, then verify the temporary mutation is absent and discard the worktree without merging it.'
+      'Include the unchanged steps list in the notes-only PUT so the test isolates notes behavior; keep the status-only case as a separate PATCH control.',
+      'Confirm the deliberate mutation affects PUT update, not PATCH updateStatus; record which assertion fails and which controls remain green.',
+      'Run the full backend suite, verify the temporary mutation is absent, and discard the worktree without merging it.'
     ],
     references: [
       { label: 'Project Java testing and checklist rules', url: 'https://github.com/sampath12082/copilot-field-guide/blob/main/.github/instructions/java.instructions.md' }

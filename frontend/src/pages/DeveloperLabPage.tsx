@@ -25,6 +25,7 @@ export default function DeveloperLabPage() {
           <li>Keep database passwords, tokens, customer data, and unrelated private files out of prompts and attachments.</li>
           <li>Read the project instructions and verify every proposed command before allowing it to run.</li>
         </ul>
+        <p><strong>Prerequisites:</strong> Java 21, Node.js 24+ with npm, and Docker with Compose. Backend exercises require the local PostgreSQL/API stack.</p>
         <p>Install the prerequisites and start the local database/API using the steps in the <a href="https://github.com/sampath12082/copilot-field-guide/blob/main/README.md" target="_blank" rel="noreferrer">repository README</a>.</p>
       </section>
 

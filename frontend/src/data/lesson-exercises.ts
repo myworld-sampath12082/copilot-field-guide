@@ -183,14 +183,15 @@ export const lessonEnhancements: Record<string, LessonEnhancement> = {
       ['Responsible use of Copilot Chat', docs.responsibleChat]
     ),
     exercise: {
-      title: 'Compare a task with and without relevant project context',
-      context: 'Use the documented local backend test command and Java instructions as context for a small test-only change.',
-      prompt: 'Read the repository guidance that applies to the target test. Summarize the test command and constraints you found, propose a test-only change, and state how you will validate it. Do not edit production code.',
-      expected: 'The proposal cites the relevant guidance and identifies a concrete validation command; it does not claim that guidance guarantees correctness.',
+      title: 'Compare the same test task with and without project guidance',
+      context: 'Use two fresh chats in the same client with the same model and workspace. Compare a test-only task for TrainingTaskService.updateStatus; do not edit production code or change any other context between runs. The Java path-specific instructions target main-source files, not files under src/test.',
+      prompt: 'Run this same task twice in fresh chats. Run A: do not open, attach, or reference README.md or .github/copilot-instructions.md; ask: “Inspect TrainingTaskService.updateStatus and its focused tests. Propose a test-only change for one meaningful untested boundary. List the test file, exact test command, relevant constraints, and expected assertion. Do not edit files.” Run B: repeat the exact prompt in a fresh chat, but first provide README.md and .github/copilot-instructions.md as repository-wide context. Also show .github/instructions/java.instructions.md and ask whether its applyTo pattern matches the production service and/or the target src/test file; do not treat it as applicable to the test unless its path scope matches. Compare the proposed test, constraints, command, and validation; verify both proposals against the source before deciding whether guidance improved the result.',
+      expected: 'A controlled, source-checked comparison records what changed between the two proposals and whether Run B used accurate project-specific commands or rules. It correctly distinguishes repository-wide guidance from Java source-only path instructions, and does not claim that guidance guarantees correctness or that the first run had no implicit context.',
       validation: [
-        'Check the guidance filename and scope against the target file.',
-        'Compare the proposed command with README.md and package/build files.',
-        'Run the test and review the diff rather than relying on the instruction alone.'
+        'Use fresh chats with the same client, model, workspace, and prompt; vary only whether the named guidance is explicitly provided.',
+        'Record any implicit context the client may still include and do not treat Run A as a guaranteed no-context baseline.',
+        'Check instruction filename and path scope against the target test file.',
+        'Verify the proposed test and command against the actual source, README.md, and Maven configuration; guidance is not proof.'
       ]
     }
   },

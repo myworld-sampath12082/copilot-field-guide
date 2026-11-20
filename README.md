@@ -16,6 +16,7 @@ A local React + TypeScript learning companion, Spring Boot API, and PostgreSQL t
 
 - [Site feedback and remediation status](./docs/site-feedback.md)
 - [Example coverage audit](./docs/example-coverage-audit.md)
+- [November 20 site re-audit](./docs/site-reaudit-nov20-2026.md)
 
 ## Free static deployment
 

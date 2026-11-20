@@ -54,6 +54,11 @@ test('every course topic includes its explanation, worked scenario, visual, prac
     await expect(page.getByRole('heading', { name: 'Validate it' })).toBeVisible()
     await expect(page.locator('.scenario-steps dt')).toHaveText(['What you do', 'What Copilot may do', 'What to review'])
     await expect(page.locator('.course-visual')).toBeVisible()
+    await expect(page.locator('.course-visual')).toHaveCSS('display', 'block')
+    const comparison = page.locator('.course-visual .visual-comparison')
+    if (await comparison.count()) {
+      await expect(comparison).toHaveCSS('display', 'grid')
+    }
     await expect(page.getByRole('heading', { name: 'Check your understanding' })).toBeVisible()
     await expect(page.locator('.slide-references a').first()).toBeVisible()
 

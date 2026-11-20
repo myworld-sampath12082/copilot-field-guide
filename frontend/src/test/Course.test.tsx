@@ -6,6 +6,7 @@ import DeveloperLabPage from '../pages/DeveloperLabPage'
 import LessonPage from '../pages/LessonPage'
 import SlideIndexPage from '../pages/SlideIndexPage'
 import { lessons } from '../data/course'
+import { labExercises } from '../data/lab'
 
 test('presents the learning path as the main experience', () => {
   render(<MemoryRouter><CourseHomePage completedLessons={[]} /></MemoryRouter>)
@@ -60,10 +61,28 @@ test('every lesson has a scoped surface, a prompt, an expected result, and valid
   }
 })
 
+test('applied exercises distinguish client syntax, isolate regression behavior, and compare context', () => {
+  const promptExercise = labExercises[0]
+  expect(promptExercise.references?.some(reference => reference.label.startsWith('VS Code Chat'))).toBe(true)
+  expect(promptExercise.references?.filter(reference => reference.label.includes('app-only'))).toHaveLength(2)
+  expect(promptExercise.prompt).toContain('do not transfer that syntax to VS Code')
+
+  const regressionExercise = labExercises.find(exercise => exercise.title.includes('checklist-state regression'))
+  expect(regressionExercise?.prompt).toContain('notes-only PUT')
+  expect(regressionExercise?.prompt).toContain('status-only PATCH')
+  expect(regressionExercise?.expected).toContain('only the notes-only PUT preservation test fails')
+
+  const setupExercise = lessons.find(lesson => lesson.slug === 'why-setup-files')?.exercise
+  expect(setupExercise?.title).toContain('with and without project guidance')
+  expect(setupExercise?.prompt).toContain('Run A:')
+  expect(setupExercise?.prompt).toContain('Run B:')
+})
+
 test('the hands-on lab covers the coding capstone and explicit course scope', () => {
   render(<MemoryRouter><DeveloperLabPage /></MemoryRouter>)
 
   expect(screen.getByRole('heading', { name: 'From prompt to reviewed change' })).toBeInTheDocument()
+  expect(screen.getByText(/Java 21, Node\.js 24\+ with npm, and Docker with Compose/i)).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'End-to-end capstone' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Check policy before sharing context or granting access' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Check data handling and access policy before prompting' })).toBeInTheDocument()

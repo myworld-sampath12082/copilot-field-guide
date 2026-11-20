@@ -25,6 +25,19 @@ The environment lesson now distinguishes local work, GitHub-hosted Cloud sandbox
 
 **Publication:** deployed to Cloudflare Pages Free at [https://copilot-field-guide.pages.dev](https://copilot-field-guide.pages.dev). The public site remains course-only; the Java API and PostgreSQL are not hosted.
 
+## November 20, 2026 re-audit follow-up
+
+The full follow-up report is archived in [site-reaudit-nov20-2026.md](./site-reaudit-nov20-2026.md). Its three requested exercise refinements are addressed:
+
+- [x] Make the regression red/green path a notes-only PUT with the unchanged checklist, a separate status-only PATCH control, and a distinct checklist-change reset case.
+- [x] Separate VS Code Chat syntax/documentation from GitHub Copilot app-only references and commands; do not imply shared support for `@participants`.
+- [x] Compare the same test-only task with and without explicitly supplied project guidance in two fresh, otherwise consistent chats.
+- [x] Keep Java, Node.js, Docker Compose, and the local PostgreSQL/API requirements visible in the lab.
+
+The screenshot feedback also uncovered a related layout issue: `CourseVisual` gave its outer `<figure>` the same `visual-comparison` class as the inner comparison grid, causing the figure heading, cards, and caption to become grid columns at tablet widths. The wrapper now has its own `course-visual` class, and browser coverage asserts the figure stays block-level while the comparison content remains a grid.
+
+**Validation:** frontend unit tests passed (7 tests), production build passed, and four targeted Playwright checks passed (navigation, every lesson route, mobile layout, and API-free public pages). A tablet-width browser check at 763 px confirmed the comparison heading, cards, and caption stack without overlap while the inner comparison remains a grid. The full tracker E2E suite was not run because its local PostgreSQL/API stack was not running.
+
 ## Audit report
 
 ### Audit scope and date
