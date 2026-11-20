@@ -307,7 +307,7 @@ const lessonContent: LessonDraft[] = [
         { title: 'Spring Boot API', detail: 'Handles task requests and validation.' },
         { title: 'PostgreSQL', detail: 'Persists training tasks and progress.' }
       ],
-      caption: 'This is a simplified map of this demo app; use its source and overview document to verify details.'
+      caption: 'Local full-stack application only: the published Cloudflare Pages site is static and does not run the Java API or PostgreSQL. Use the source and overview document to verify the local flow.'
     },
     check: {
       question: 'When is an architecture overview useful to an assistant?',

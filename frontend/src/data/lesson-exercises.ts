@@ -6,6 +6,10 @@ const docs = {
   agentSessions: 'https://docs.github.com/en/copilot/how-tos/github-copilot-app/agent-sessions',
   vsCodeCodebaseExploration: 'https://code.visualstudio.com/docs/agents/guides/explore-a-codebase',
   vsCodeChatView: 'https://code.visualstudio.com/docs/agents/run/chat-view',
+  vsCodeChatContext: 'https://code.visualstudio.com/docs/chat/copilot-chat-context',
+  vsCodeWorkspaceContext: 'https://code.visualstudio.com/docs/agents/reference/workspace-context',
+  vsCodeSessionHistory: 'https://code.visualstudio.com/docs/agents/run/sessions/session-history',
+  vsCodeCustomizationDiagnostics: 'https://code.visualstudio.com/docs/agents/agent-troubleshooting/troubleshooting#_check-customization-diagnostics',
   cloudSandboxes: 'https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-sandboxes',
   customEnvironments: 'https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/create-a-custom-environment',
   customInstructions: 'https://docs.github.com/en/copilot/reference/custom-instructions-support',
@@ -125,8 +129,9 @@ export const lessonEnhancements: Record<string, LessonEnhancement> = {
     }
   },
   'prompt-attachments': {
-    surface: 'Copilot chat attachment picker; available files, issues, pull requests, and sessions vary by client.',
+    surface: 'VS Code Chat `#` mentions and context picker; available context items differ across Copilot clients.',
     resources: resources(
+      ['VS Code Chat context items and #-mentions', docs.vsCodeChatContext],
       ['Responsible use of Copilot Chat', docs.responsibleChat],
       ['Copilot policies and model training', docs.policies],
       ['Original slide 8 screenshot (historical; capture date unknown)', '/deck/slide-08.png']
@@ -134,12 +139,14 @@ export const lessonEnhancements: Record<string, LessonEnhancement> = {
     exercise: {
       title: 'Attach only the context needed to fix a task',
       context: 'Use the task API as an example. Attach a controller and its focused test only if those options exist in your client; never attach local secrets or unrelated customer data.',
-      prompt: 'Using only the relevant task API controller and its test, explain where the request is validated and how the response is formed. Do not edit files. List the context you used and say if you need more information.',
-      expected: 'A concise, source-anchored explanation and an explicit list of the selected context; no assumptions that every client supports the same picker options.',
+      prompt: 'In VS Code Chat only, type `#` and select TrainingTaskController.java and TrainingTaskControllerTest.java from the context picker. For example, reference them as `#TrainingTaskController.java` and `#TrainingTaskControllerTest.java` in the prompt: “Trace GET /api/tasks?topic=README.md from request validation to the response. Use the selected files, cite any additional source you need, and do not edit files.” You may also use `#codebase` to request workspace search; it does not attach the entire repository. Do not transfer this syntax to another Copilot client.',
+      expected: 'A source-anchored explanation with the selected VS Code context items named. The learner can distinguish explicit file mentions from `#codebase` workspace search and does not infer that either includes every file.',
       validation: [
-        'Inspect every selected attachment before sending.',
+        'Type `#` and select the exact file or symbol from the current VS Code picker; confirm the selected context before sending.',
+        'Treat `#codebase` as a workspace-search tool, not as an attachment of the entire repository.',
+        'Do not assume `@participants`, file-picker options, or identical mention syntax are shared by other clients.',
         'Remove secrets, personal data, and unrelated files; check organization policy for permitted context.',
-        'Verify each claim against the attached source and report any missing context.'
+        'Verify each claim against source and report any missing context.'
       ]
     }
   },
@@ -166,6 +173,8 @@ export const lessonEnhancements: Record<string, LessonEnhancement> = {
     surface: 'VS Code Copilot status view shown in the source deck; screenshot capture date and extension version are unknown.',
     resources: resources(
       ['Monitor Copilot AI usage', docs.usage],
+      ['VS Code workspace context, semantic search, and indexing', docs.vsCodeWorkspaceContext],
+      ['VS Code session history and sync', docs.vsCodeSessionHistory],
       ['Copilot policies and model training', docs.policies],
       ['Original slide 10 screenshot (historical; values are not current plan limits)', '/deck/slide-10.png']
     ),
@@ -190,13 +199,15 @@ export const lessonEnhancements: Record<string, LessonEnhancement> = {
     exercise: {
       title: 'Compare the same test task with and without project guidance',
       context: 'Use two fresh chats in the same client with the same model and workspace. Compare a test-only task for TrainingTaskService.updateStatus; do not edit production code or change any other context between runs. The Java path-specific instructions target main-source files, not files under src/test.',
-      prompt: 'Run this same task twice in fresh chats. Run A: do not open, attach, or reference README.md or .github/copilot-instructions.md; ask: “Inspect TrainingTaskService.updateStatus and its focused tests. Propose a test-only change for one meaningful untested boundary. List the test file, exact test command, relevant constraints, and expected assertion. Do not edit files.” Run B: repeat the exact prompt in a fresh chat, but first provide README.md and .github/copilot-instructions.md as repository-wide context. Also show .github/instructions/java.instructions.md and ask whether its applyTo pattern matches the production service and/or the target src/test file; do not treat it as applicable to the test unless its path scope matches. Compare the proposed test, constraints, command, and validation; verify both proposals against the source before deciding whether guidance improved the result.',
-      expected: 'A controlled, source-checked comparison records what changed between the two proposals and whether Run B used accurate project-specific commands or rules. It correctly distinguishes repository-wide guidance from Java source-only path instructions, and does not claim that guidance guarantees correctness or that the first run had no implicit context.',
+      prompt: 'Run this same task twice in fresh chats. Run A: do not open, attach, or reference README.md or .github/copilot-instructions.md; ask: “Inspect TrainingTaskService.updateStatus and its focused tests. Propose a test-only change for one meaningful untested boundary. List the test file, exact test command, relevant constraints, and expected assertion. Do not edit files.” Run B: repeat the exact prompt in a fresh chat, but first provide README.md and .github/copilot-instructions.md as repository-wide context. Also show .github/instructions/java.instructions.md and ask whether its applyTo pattern matches the production service and/or the target src/test file; do not treat it as applicable to the test unless its path scope matches. For each run, inspect the selected client’s customization diagnostics and per-request references/debug details where available; record support, discovery, and inclusion separately, or mark inclusion unverified if no reliable signal is exposed. Compare the proposed test, constraints, command, and validation; verify both proposals against the source before deciding whether guidance improved the result.',
+      expected: 'A controlled, source-checked comparison records what changed between the proposals and accurately distinguishes support, discovery, request inclusion, and rule adherence. It does not claim Run A had no implicit context, that a model self-report proves inclusion, or that guidance guarantees correctness.',
       validation: [
         'Use fresh chats with the same client, model, workspace, and prompt; vary only whether the named guidance is explicitly provided.',
         'Record any implicit context the client may still include and do not treat Run A as a guaranteed no-context baseline.',
+        'Use client diagnostics or request references to check discovery and inclusion; if no reliable per-session signal is available, mark inclusion unverified.',
         'Check instruction filename and path scope against the target test file.',
-        'Verify the proposed test and command against the actual source, README.md, and Maven configuration; guidance is not proof.'
+        'Verify the proposed test and command against the actual source, README.md, and Maven configuration; guidance is not proof.',
+        'Redact prompts, source, paths, and tool details before sharing diagnostic output.'
       ]
     }
   },
@@ -233,32 +244,42 @@ export const lessonEnhancements: Record<string, LessonEnhancement> = {
     }
   },
   'copilot-instructions': {
-    surface: 'Repository-wide Copilot instructions in clients/features that support .github/copilot-instructions.md.',
-    resources: resources(['Custom-instruction support matrix', docs.customInstructions]),
+    surface: 'VS Code Copilot Chat; confirm repository-wide instruction support and per-session discovery in the selected workspace.',
+    resources: resources(
+      ['Custom-instruction support matrix', docs.customInstructions],
+      ['VS Code customization and chat diagnostics', docs.vsCodeCustomizationDiagnostics]
+    ),
     exercise: {
-      title: 'Test whether repository guidance applies to the selected client',
-      context: 'Use an instruction that asks a supported feature to report the project test command; do not add a rule that changes security behavior.',
-      prompt: 'In this repository context, find .github/copilot-instructions.md. If this client supports it, report the test and build checks it lists and explain how you know the file was included. If you cannot verify inclusion, say so instead of guessing.',
-      expected: 'An explicit support/inclusion status and a source-anchored summary, not an assumption that all Copilot requests load the file.',
+      title: 'Verify instruction support, discovery, inclusion, and adherence separately',
+      context: 'Use VS Code Chat in this repository. A support matrix describes feature capability; it does not prove that this file reached a particular request.',
+      prompt: 'First check the current support matrix for VS Code Copilot Chat. Then run `Chat: Open Customizations` from the Command Palette, select Instructions, and find .github/copilot-instructions.md; record its source, location, and any errors. For a fresh task, inspect References where available or the documented Chat Debug view/request logs to check whether the file was included. Finally, compare the response and any diff with the file’s actual rules. Distinguish supported, discovered, included, and followed. If no reliable request-level inclusion signal is available, say inclusion is unverified; a model claiming it read the file is not proof.',
+      expected: 'A four-part status distinguishes feature support, file discovery, request inclusion, and observable adherence. The learner marks inclusion unverified when the selected client exposes no reliable signal and checks actual behavior against the source instead of trusting self-report.',
       validation: [
-        'Check the support matrix for the exact client and feature.',
-        'Compare the reported commands and boundaries with the file itself.',
-        'Run the relevant check and confirm that project facts take precedence over stale guidance.'
+        'Check the support matrix for the exact client and feature; do not treat support as discovery.',
+        'Use `Chat: Open Customizations` > Instructions to check the file, source, location, and reported errors.',
+        'Check References or the exact request in documented debug logs where available; otherwise record inclusion as unverified.',
+        'Compare the response and any diff with the instruction file and project source; adherence is separate from inclusion.',
+        'Redact sensitive prompts, source, paths, and tool inputs/outputs before sharing diagnostics.'
       ]
     }
   },
   'path-specific': {
-    surface: 'Copilot features that support path-specific instruction files; filename, glob, and client support all matter.',
-    resources: resources(['Custom-instruction support matrix', docs.customInstructions]),
+    surface: 'VS Code Copilot Chat for the diagnostic steps; path-specific support and activation can differ in other features.',
+    resources: resources(
+      ['Custom-instruction support matrix', docs.customInstructions],
+      ['VS Code customization and chat diagnostics', docs.vsCodeCustomizationDiagnostics]
+    ),
     exercise: {
-      title: 'Create and test one Java-scoped instruction',
+      title: 'Create and verify one Java-scoped instruction',
       context: 'Use the actual frontend/backend paths in this repository. A path-specific instruction filename ends in .instructions.md under .github/instructions/.',
-      prompt: 'Draft .github/instructions/java.instructions.md with frontmatter applyTo: "backend/src/main/java/**/*.java". Include only verified Java/Spring conventions from this repository. Show one matching path and one non-matching test or TypeScript path; do not edit until I review.',
-      expected: 'A complete file with valid frontmatter, a narrow pattern, and conventions consistent with the existing Java instructions; no unrelated SQL Server or AWS assumptions.',
+      prompt: 'Draft .github/instructions/java.instructions.md with frontmatter applyTo: "backend/src/main/java/**/*.java". Include only verified Java/Spring conventions from this repository. Show one matching path and one non-matching test or TypeScript path; do not edit until I review. In a fresh VS Code Chat request, check customization diagnostics for discovery and request References or debug details for inclusion where available. Do not infer inclusion from the response alone.',
+      expected: 'A file with valid frontmatter and a narrow, source-verified pattern, plus separate support/discovery/inclusion/adherence results. If the current request has no inspectable inclusion signal, that status remains unverified.',
       validation: [
         'Verify the filename and frontmatter format against current instructions documentation.',
         'Check the pattern against backend/src/main/java/... and frontend/src/... paths.',
-        'Confirm the selected feature supports path-specific files and verify behavior on one matching file.'
+        'Check the matching and non-matching paths in the customization diagnostics and the request references where available.',
+        'Confirm feature support separately; if inclusion cannot be inspected, record it as unverified and compare behavior without treating it as proof.',
+        'Redact sensitive content before sharing diagnostic output.'
       ]
     }
   },

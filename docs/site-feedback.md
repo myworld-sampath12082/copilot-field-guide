@@ -64,6 +64,22 @@ The first guided lab exercise now separates a two-command VS Code workflow (`/ex
 
 **Validation:** frontend unit tests passed (10 tests); production TypeScript/Vite build passed.
 
+## Independent audit follow-up — November 20, 2026
+
+The attached independent review scored the published snapshot 68/100 for training and 70/100 for example coverage. These are the review's scores, not a recalculated result.
+
+- [x] Exercise 5 now compares the topic/status-only baseline commit with the title-filter implementation on the named Exercise 2 branch.
+- [x] The lab distinguishes expected outcomes from observed Copilot responses and asks learners to record the actual client context, response, diff, commands, and results.
+- [x] Inline completion now has a specific temporary JavaScript file, starter stub, trigger, accept/partial-accept/dismiss controls, and executable expected cases.
+- [x] Instruction exercises separate feature support, file discovery, request inclusion, and rule adherence using VS Code customization diagnostics and request references where available.
+- [x] The course title names GitHub Copilot workflows rather than implying an app-only course; the VS Code attachment lesson demonstrates `#` file mentions and `#codebase`.
+- [x] The refactor is now an instructor extension that requires a fixed repository, method, contract, and baseline command; MCP is reference-only unless an instructor supplies an approved sandbox demo.
+- [x] Usage and status lessons link directly to current workspace-index and session-history documentation, and the architecture diagram states that it describes local full-stack development rather than the static public deployment.
+
+**Remaining evidence boundary:** this update does not add a captured current-client session, generated diff/test transcript, current UI screenshot, or working MCP sandbox. Those must be supplied and validated by an instructor; the course now requires learners to capture their own results and does not present expected outcomes as observed evidence. Log analysis and a seeded vulnerable-code exercise remain explicitly out of scope. A fresh independent review is needed to score the revised site.
+
+**Validation:** frontend unit tests passed (11 tests); TypeScript and the production Vite build passed. Tests cover the Exercise 2 branch baseline, client-specific slash/context syntax, instruction diagnostics, MCP scope, and public deployment boundary.
+
 ## Audit report
 
 ### Audit scope and date

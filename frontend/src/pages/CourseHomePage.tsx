@@ -22,9 +22,9 @@ export default function CourseHomePage({ completedLessons }: { completedLessons:
       <section className="course-hero">
         <div className="hero-copy">
           <p className="eyebrow">AI Enablement Pilot · Guided course</p>
-          <h1>Copilot app workflow &amp; project setup</h1>
+          <h1>GitHub Copilot agent workflows &amp; project setup</h1>
           <p className="hero-description">
-            A focused course on agent sessions and repository guidance, with applied exercises and a Java/Spring Boot lab.
+            A focused course on client-specific workflows in the Copilot app and VS Code, with selected CLI notes, repository guidance, and a Java/Spring Boot lab.
             It is a practical introduction, not a complete Copilot or enterprise-governance curriculum.
           </p>
           <div className="hero-actions">

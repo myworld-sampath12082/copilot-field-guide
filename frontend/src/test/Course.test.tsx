@@ -6,12 +6,13 @@ import DeveloperLabPage from '../pages/DeveloperLabPage'
 import LessonPage from '../pages/LessonPage'
 import SlideIndexPage from '../pages/SlideIndexPage'
 import { courseReviewDate, lessons } from '../data/course'
-import { labExercises } from '../data/lab'
+import { labExercises, topicCoverage } from '../data/lab'
 
 test('presents the learning path as the main experience', () => {
   render(<MemoryRouter><CourseHomePage completedLessons={[]} /></MemoryRouter>)
 
-  expect(screen.getByRole('heading', { name: 'Copilot app workflow & project setup' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'GitHub Copilot agent workflows & project setup' })).toBeInTheDocument()
+  expect(screen.getByText(/client-specific workflows in the Copilot app and VS Code, with selected CLI notes/i)).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Project setup' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Copilot workflow' })).toBeInTheDocument()
   expect(screen.getByRole('link', { name: 'Open practice tracker' })).toHaveAttribute('href', '/practice')
@@ -72,18 +73,54 @@ test('applied exercises distinguish client syntax, isolate regression behavior, 
   expect(promptExercise.prompt).toContain('`/plan`')
   expect(promptExercise.prompt).toContain('`/review`')
   expect(promptExercise.prompt).toContain('Do not use those app commands as if they were VS Code commands.')
+  expect(promptExercise.prompt).toContain('inline-suggestions-practice.js')
+  expect(promptExercise.prompt).toContain('Trigger Inline Suggestion')
+  expect(promptExercise.prompt).toContain('Ctrl+Right')
+  expect(promptExercise.prompt).toContain('`node inline-suggestions-practice.js`')
   expect(promptExercise.expected).toContain('proposed JUnit 5 test without editing files')
   expect(promptExercise.validation).toContain('Type `/` in VS Code Chat and confirm the current command list; command availability can vary by client version and context.')
+  expect(promptExercise.references?.some(reference => reference.url === 'https://code.visualstudio.com/docs/editing/ai-powered-suggestions')).toBe(true)
 
   const regressionExercise = labExercises.find(exercise => exercise.title.includes('checklist-state regression'))
   expect(regressionExercise?.prompt).toContain('notes-only PUT')
   expect(regressionExercise?.prompt).toContain('status-only PATCH')
   expect(regressionExercise?.expected).toContain('only the notes-only PUT preservation test fails')
 
+  expect(labExercises[1].context).toContain('baseline commit SHA')
+  expect(labExercises[1].context).toContain('`exercise-2-title-filter`')
+  const queryExercise = labExercises.find(exercise => exercise.title.includes('query safety and performance'))
+  expect(queryExercise?.context).toContain('unmodified baseline commit has only topic and status filters')
+  expect(queryExercise?.prompt).toContain('newly added title filter')
+  expect(queryExercise?.prompt).toContain('`exercise-2-title-filter` branch')
+  expect(queryExercise?.expected).toContain('title as an Exercise 2 branch addition')
+
+  const refactorExercise = labExercises.find(exercise => exercise.title.includes('refactoring is an instructor extension'))
+  expect(refactorExercise?.expected).toContain('repository, commit, method, contract, and baseline checks')
+
+  const mcpExercise = labExercises.find(exercise => exercise.title.includes('instructor demo'))
+  expect(mcpExercise?.expected).toContain('reference-only')
+  expect(topicCoverage.find(item => item.topic === 'MCP tools and trust boundaries')?.status).toContain('instructor provides an approved')
+
   const setupExercise = lessons.find(lesson => lesson.slug === 'why-setup-files')?.exercise
   expect(setupExercise?.title).toContain('with and without project guidance')
   expect(setupExercise?.prompt).toContain('Run A:')
   expect(setupExercise?.prompt).toContain('Run B:')
+  expect(setupExercise?.prompt).toContain('inspect the selected client’s customization diagnostics')
+  expect(setupExercise?.expected).toContain('request inclusion')
+
+  const attachmentExercise = lessons.find(lesson => lesson.slug === 'prompt-attachments')
+  expect(attachmentExercise?.exercise.prompt).toContain('#TrainingTaskController.java')
+  expect(attachmentExercise?.exercise.prompt).toContain('`#codebase`')
+  expect(attachmentExercise?.resources.some(resource => resource.url === 'https://code.visualstudio.com/docs/chat/copilot-chat-context')).toBe(true)
+
+  const instructionsExercise = lessons.find(lesson => lesson.slug === 'copilot-instructions')?.exercise
+  expect(instructionsExercise?.prompt).toContain('Chat: Open Customizations')
+  expect(instructionsExercise?.prompt).toContain('References')
+  expect(instructionsExercise?.expected).toContain('marks inclusion unverified')
+
+  const statusLesson = lessons.find(lesson => lesson.slug === 'usage-and-status')
+  expect(statusLesson?.resources.some(resource => resource.url === 'https://code.visualstudio.com/docs/agents/reference/workspace-context')).toBe(true)
+  expect(statusLesson?.resources.some(resource => resource.url === 'https://code.visualstudio.com/docs/agents/run/sessions/session-history')).toBe(true)
 })
 
 test('agent selection distinguishes current VS Code controls from Copilot app modes', () => {
@@ -138,12 +175,26 @@ test('the model lesson separates current app controls from historical screenshot
   expect(screen.getByText(/source-deck screenshots are historical/i)).toBeInTheDocument()
 })
 
+test('the architecture diagram identifies the static public deployment boundary', () => {
+  render(
+    <MemoryRouter initialEntries={['/learn/architecture-overview']}>
+      <Routes>
+        <Route path="/learn/:slug" element={<LessonPage completedLessons={[]} onComplete={vi.fn()} />} />
+      </Routes>
+    </MemoryRouter>
+  )
+
+  expect(screen.getByText(/Local full-stack application only: the published Cloudflare Pages site is static and does not run the Java API or PostgreSQL/i)).toBeInTheDocument()
+})
+
 test('the hands-on lab covers the coding capstone and explicit course scope', () => {
   render(<MemoryRouter><DeveloperLabPage /></MemoryRouter>)
 
   expect(screen.getByRole('heading', { name: 'From prompt to reviewed change' })).toBeInTheDocument()
   expect(screen.getByText(/Java 21, Node\.js 24\+ with npm, and Docker with Compose/i)).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'No local API yet? Start with a read-only source trace' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'Record evidence you actually produce' })).toBeInTheDocument()
+  expect(screen.getByText(/published course does not include captured Copilot responses/i)).toBeInTheDocument()
   expect(screen.getByRole('link', { name: 'controller' })).toHaveAttribute(
     'href',
     'https://github.com/sampath12082/copilot-field-guide/blob/main/backend/src/main/java/com/example/training/tasks/TrainingTaskController.java'
@@ -154,4 +205,5 @@ test('the hands-on lab covers the coding capstone and explicit course scope', ()
   expect(screen.getByText(/individual Copilot Free, Pro, Pro\+, and Max plans may be used to train and improve models/i)).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'What this course covers—and does not' })).toBeInTheDocument()
   expect(screen.getByText(/install arbitrary MCP servers or change enterprise admin policy/i)).toBeInTheDocument()
+  expect(screen.getByText(/MCP tools and trust boundaries/i)).toBeInTheDocument()
 })

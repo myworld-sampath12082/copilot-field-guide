@@ -11,7 +11,8 @@ export default function DeveloperLabPage() {
         <p>
           Work in this repository locally: understand a service, implement a small multi-file API change,
           test a regression, and review the diff. Each exercise gives you a prompt, expected behavior, and
-          evidence to collect. It does not claim that a particular Copilot client will produce a correct answer.
+          evidence to collect. The published course does not include captured Copilot responses, generated
+          diffs, or test transcripts; expected outcomes are criteria, not observed results.
         </p>
         <p><strong>Reviewed:</strong> {courseReviewDate}. Client controls and organization policies can change.</p>
         <Link className="button-link button-primary" to="/learn/session-modes">Review the workflow lessons first</Link>
@@ -27,6 +28,18 @@ export default function DeveloperLabPage() {
         </ul>
         <p><strong>Prerequisites:</strong> Java 21, Node.js 24+ with npm, and Docker with Compose. Check the installed tools with <code>java -version</code>, <code>node --version</code>, <code>npm --version</code>, and <code>docker compose version</code>. Backend exercises require the local PostgreSQL/API stack.</p>
         <p>Install the prerequisites and start the local database/API using the steps in the <a href="https://github.com/sampath12082/copilot-field-guide/blob/main/README.md" target="_blank" rel="noreferrer">repository README</a>.</p>
+      </section>
+
+      <section className="lab-safety" aria-labelledby="evidence-record-heading">
+        <h2 id="evidence-record-heading">Record evidence you actually produce</h2>
+        <p>For each exercise, keep a short local record. Do not present an expected outcome as a result you observed.</p>
+        <ul>
+          <li>Note the client/version, session role or mode, model, prompt, context, permissions, and tools used; redact sensitive details.</li>
+          <li>Save the actual response or plan, any human correction, the final diff, and the changed-file list.</li>
+          <li>Record each exact command and its observed output. Label checks you could not run as “not run.”</li>
+          <li>For the regression exercise, record baseline results, the failing assertion during the temporary mutation, passing controls, and restored results.</li>
+          <li>Review and redact prompts, source, paths, and tool inputs/outputs before sharing diagnostic logs.</li>
+        </ul>
       </section>
 
       <section className="lab-browser-path" aria-labelledby="lab-browser-path-heading">
