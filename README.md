@@ -15,7 +15,11 @@ A local React + TypeScript learning companion, Spring Boot API, and PostgreSQL t
 
 The React learning course can be hosted on the Cloudflare Pages Free plan without deploying the Java API or PostgreSQL database. The production build omits the practice tracker because it requires the local API, whose task write endpoints are not authenticated.
 
-In Cloudflare Pages, connect the repository and set:
+**Live site:** [https://copilot-field-guide.pages.dev](https://copilot-field-guide.pages.dev)
+
+The current site is deployed to Cloudflare Pages using a direct upload of `frontend/dist`. To publish an updated build manually, run `npm --prefix frontend run build`, then `wrangler pages deploy frontend/dist --project-name copilot-field-guide`.
+
+For automatic deployments from GitHub, connect this repository in Cloudflare Pages and set:
 
 - Root directory: `frontend`
 - Build command: `npm ci && npm run build`
