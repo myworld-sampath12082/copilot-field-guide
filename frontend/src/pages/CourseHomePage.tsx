@@ -22,16 +22,17 @@ export default function CourseHomePage({ completedLessons }: { completedLessons:
       <section className="course-hero">
         <div className="hero-copy">
           <p className="eyebrow">AI Enablement Pilot · Guided course</p>
-          <h1>Copilot project setup &amp; workflow</h1>
+          <h1>Copilot app workflow &amp; project setup</h1>
           <p className="hero-description">
-            A practical learning path through the project guidance files and Copilot workflow shown in the presentation.
-            Each lesson includes an example, a visual, a practice check, and the related source slide.
+            A focused course on agent sessions and repository guidance, with applied exercises and a Java/Spring Boot lab.
+            It is a practical introduction, not a complete Copilot or enterprise-governance curriculum.
           </p>
           <div className="hero-actions">
             <Link className="button-link button-primary" to={`/learn/${firstIncomplete.slug}`}>
               {completed.size ? 'Continue learning' : 'Start learning'}
             </Link>
             <Link className="button-link button-secondary" to="/slides">Browse slide references</Link>
+            <Link className="button-link button-secondary" to="/lab">Open the hands-on lab</Link>
           </div>
         </div>
         <aside className="course-progress" aria-label="Course progress">
@@ -45,9 +46,24 @@ export default function CourseHomePage({ completedLessons }: { completedLessons:
       <section className="learning-intro" aria-labelledby="learning-path-heading">
         <div>
           <p className="eyebrow">Learning path</p>
-          <h2 id="learning-path-heading">Follow the presentation in two parts</h2>
+          <h2 id="learning-path-heading">Learn the concepts, then validate them in code</h2>
         </div>
-        <p>Source of truth: the 17-slide Copilot Project Setup Files presentation. Behavior and availability can vary by feature, client, account, settings, and organization policy.</p>
+        <p>The supplied 17-slide presentation is the source reference, not a current product manual. Each lesson names its surface and links to current documentation; interface support can vary by client, plan, settings, and organization policy.</p>
+      </section>
+
+      <section className="learning-outcomes" aria-labelledby="outcomes-heading">
+        <div>
+          <p className="eyebrow">Course scope</p>
+          <h2 id="outcomes-heading">After this course, you can</h2>
+          <p>Audience: developers comfortable reading an existing repository and running its checks. The local lab uses Java 21, Node.js, and Docker. Content references reviewed November 20, 2026; confirm current behavior before applying organization-specific settings.</p>
+          <p className="scope-map-link"><Link to="/lab#coverage">See the complete topic map and explicit out-of-scope items.</Link></p>
+        </div>
+        <ul>
+          <li>Separate session mode, agent role, tool approval, and execution environment.</li>
+          <li>Give Copilot relevant repository context without attaching secrets or unrelated data.</li>
+          <li>Choose project guidance by audience and path, then verify the selected feature supports it.</li>
+          <li>Prompt, test, inspect a diff, and review security and scope before proposing a change.</li>
+        </ul>
       </section>
 
       <div className="course-sections">

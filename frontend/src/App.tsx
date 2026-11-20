@@ -3,6 +3,7 @@ import { Link, Route, Routes, useLocation } from 'react-router-dom'
 import { lessons } from './data/course'
 import BoardPage from './pages/BoardPage'
 import CourseHomePage from './pages/CourseHomePage'
+import DeveloperLabPage from './pages/DeveloperLabPage'
 import LessonPage from './pages/LessonPage'
 import SlideIndexPage from './pages/SlideIndexPage'
 import TaskDetailPage from './pages/TaskDetailPage'
@@ -39,6 +40,7 @@ export default function App() {
         <nav className="site-navigation" aria-label="Main navigation">
           <Link to="/" aria-current={location.pathname === '/' ? 'page' : undefined}>Learning path</Link>
           <Link to="/slides" aria-current={location.pathname === '/slides' ? 'page' : undefined}>Slide references</Link>
+          <Link to="/lab" aria-current={location.pathname === '/lab' ? 'page' : undefined}>Hands-on lab</Link>
           {practiceTrackerEnabled && (
             <Link to="/practice" aria-current={location.pathname.startsWith('/practice') ? 'page' : undefined}>Practice tracker</Link>
           )}
@@ -48,6 +50,7 @@ export default function App() {
         <Route path="/" element={<CourseHomePage completedLessons={completedLessons} />} />
         <Route path="/learn/:slug" element={<LessonPage completedLessons={completedLessons} onComplete={markComplete} />} />
         <Route path="/slides" element={<SlideIndexPage />} />
+        <Route path="/lab" element={<DeveloperLabPage />} />
         {practiceTrackerEnabled ? (
           <>
             <Route path="/practice" element={<BoardPage />} />

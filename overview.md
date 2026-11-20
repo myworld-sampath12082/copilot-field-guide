@@ -1,10 +1,13 @@
 # Application overview
 
 Copilot Field Guide is a local interactive learning companion based on a
-17-slide presentation about Copilot project setup files and workflow. The
-course presents explanations, illustrative scenarios, diagrams or source
-screenshots, practice checks, and slide references. A separate practice
-tracker retains the original task, checklist, notes, and status features.
+17-slide presentation about Copilot app workflow and project setup. The
+course presents scoped explanations, official documentation links, applied
+prompts, expected outcomes, validation steps, diagrams, and slide references.
+The `/lab` page provides a progressive local Java/Spring Boot coding lab and
+explicitly identifies topics that require client-specific or out-of-scope
+guidance. A separate practice tracker retains the original task, checklist,
+notes, and status features.
 
 ## Architecture
 
@@ -32,10 +35,16 @@ to avoid colliding with an existing local PostgreSQL service.
 
 - `frontend/src/data/course.ts` contains the lesson text, practice checks, and
   slide references derived from the presentation.
+- `frontend/src/data/lesson-exercises.ts` adds client scope, current references,
+  and reproducible prompts/validation to each lesson.
+- `frontend/src/data/lab.ts` defines progressive coding exercises, coverage
+  status, validation commands, and the capstone rubric.
 - `frontend/src/pages/CourseHomePage.tsx` presents the learning path and saves
   course-check progress in the current browser.
 - `frontend/src/pages/LessonPage.tsx` displays explanations, scenarios,
-  visuals, practice checks, and related slides.
+  exercises, official references, practice checks, and related slides.
+- `frontend/src/pages/DeveloperLabPage.tsx` presents hands-on assessments,
+  governance guidance, and the explicit course scope map.
 - `frontend/src/components/CourseVisual.tsx` renders text-based diagrams and
   selected screenshots from the presentation.
 - `frontend/src/pages/SlideIndexPage.tsx` indexes all 17 source slides and

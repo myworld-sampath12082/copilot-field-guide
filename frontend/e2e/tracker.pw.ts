@@ -3,7 +3,13 @@ import { test, expect } from './fixtures'
 test('navigates the learning path from an explanation to its slide reference', async ({ page }) => {
   await page.goto('/')
 
-  await expect(page.getByRole('heading', { name: 'Copilot project setup & workflow' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Copilot app workflow & project setup' })).toBeVisible()
+  await page.getByRole('link', { name: 'Open the hands-on lab' }).click()
+  await expect(page.getByRole('heading', { name: 'From prompt to reviewed change' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Check policy before sharing context or granting access' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Check data handling and access policy before prompting' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'What this course covers—and does not' })).toBeVisible()
+  await page.getByRole('link', { name: 'Return to the learning path' }).click()
   await page.locator('a[href="/learn/readme"]').click()
   await expect(page.getByRole('heading', { name: 'README.md: a human-friendly starting point' })).toBeVisible()
   await expect(page.getByText('Illustrative scenario', { exact: true })).toBeVisible()
@@ -42,6 +48,10 @@ test('every course topic includes its explanation, worked scenario, visual, prac
   for (const slug of slugs) {
     await page.goto(`/learn/${slug}`)
     await expect(page.getByRole('heading', { name: 'In plain language' })).toBeVisible()
+    await expect(page.locator('.surface-note')).toBeVisible()
+    await expect(page.locator('.applied-exercise')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Expected result' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Validate it' })).toBeVisible()
     await expect(page.locator('.scenario-steps dt')).toHaveText(['What you do', 'What Copilot may do', 'What to review'])
     await expect(page.locator('.course-visual')).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Check your understanding' })).toBeVisible()
@@ -58,7 +68,7 @@ test('every course topic includes its explanation, worked scenario, visual, prac
 test('provides a collapsible course navigation on mobile', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/')
-  await expect(page.getByRole('heading', { name: 'Copilot project setup & workflow' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Copilot app workflow & project setup' })).toBeVisible()
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
 
   await page.goto('/learn/agent-selection')
@@ -68,6 +78,25 @@ test('provides a collapsible course navigation on mobile', async ({ page }) => {
   await contents.click()
   await expect(page.getByRole('link', { name: 'Skills' })).toBeVisible()
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
+
+  await page.goto('/lab')
+  await expect(page.getByRole('heading', { name: 'From prompt to reviewed change' })).toBeVisible()
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
+})
+
+test('keeps public course pages independent of the task API', async ({ page }) => {
+  const apiRequests: string[] = []
+  page.on('request', request => {
+    if (new URL(request.url()).pathname.startsWith('/api/')) {
+      apiRequests.push(request.url())
+    }
+  })
+
+  await page.goto('/')
+  await page.goto('/lab')
+  await page.goto('/learn/session-modes')
+
+  expect(apiRequests).toEqual([])
 })
 
 test('shows the guidance lessons and overall progress on the board', async ({ page }) => {

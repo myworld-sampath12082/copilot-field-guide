@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import CourseVisual from '../components/CourseVisual'
-import { LessonSection, getLesson, getSectionLessons, lessons, sourceSlides } from '../data/course'
+import { courseReviewDate, LessonSection, getLesson, getSectionLessons, lessons, sourceSlides } from '../data/course'
 
 type Props = {
   completedLessons: string[]
@@ -57,6 +57,7 @@ export default function LessonPage({ completedLessons, onComplete }: Props) {
           <p className="eyebrow">{lesson.section} · Lesson {lessonIndex + 1} of {lessons.length}</p>
           <h1>{lesson.title}</h1>
           <p className="lesson-summary">{lesson.summary}</p>
+          <p className="surface-note"><strong>Surface and scope:</strong> {lesson.surface} <span>Content checked {courseReviewDate}; availability may change by client, plan, and organization policy.</span></p>
           {isComplete && <p className="completion-note" role="status">Knowledge check completed. You can revisit this lesson any time.</p>}
         </header>
 
@@ -67,6 +68,20 @@ export default function LessonPage({ completedLessons, onComplete }: Props) {
         </section>
 
         <CourseVisual visual={lesson.visual} />
+
+        <section className="applied-exercise" aria-labelledby="exercise-heading">
+          <p className="eyebrow">Apply it</p>
+          <h2 id="exercise-heading">{lesson.exercise.title}</h2>
+          <p>{lesson.exercise.context}</p>
+          <h3>Prompt or task</h3>
+          <pre><code>{lesson.exercise.prompt}</code></pre>
+          <h3>Expected result</h3>
+          <p>{lesson.exercise.expected}</p>
+          <h3>Validate it</h3>
+          <ul>
+            {lesson.exercise.validation.map(item => <li key={item}>{item}</li>)}
+          </ul>
+        </section>
 
         <section className="scenario-card" aria-labelledby="scenario-heading">
           <p className="eyebrow">Illustrative scenario</p>
@@ -122,6 +137,18 @@ export default function LessonPage({ completedLessons, onComplete }: Props) {
               <strong>{isCorrect ? 'That’s right.' : 'Not quite.'}</strong> {lesson.check.explanation}
             </p>
           )}
+        </section>
+
+        <section className="lesson-resources" aria-labelledby="resources-heading">
+          <h2 id="resources-heading">Current references</h2>
+          <p>Use official documentation to confirm support and behavior for your selected surface.</p>
+          <ul>
+            {lesson.resources.map(resource => (
+              <li key={resource.url}>
+                <a href={resource.url} target="_blank" rel="noreferrer">{resource.label}</a>
+              </li>
+            ))}
+          </ul>
         </section>
 
         <section className="slide-references" id="source-reference" aria-labelledby="source-heading">

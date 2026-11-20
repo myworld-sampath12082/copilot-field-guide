@@ -4,12 +4,18 @@ A local React + TypeScript learning companion, Spring Boot API, and PostgreSQL t
 
 ## Learning experience
 
-- The home page presents a sequenced course on setup files and Copilot workflow.
-- Each lesson includes a plain-language explanation, an illustrative worked scenario, a visual, a practice check, and related slide references.
+- The home page presents a focused course on Copilot app workflow and project setup; it is not a complete Copilot or enterprise-governance curriculum.
+- Each of the 16 lessons identifies its client/scope, links to current documentation, and includes a prompt, expected result, validation steps, a knowledge check, and source-slide references.
+- The **Hands-on lab** at `/lab` provides progressive local Java/Spring Boot exercises, a plan-specific privacy/governance check, a feature capstone, test-first regression practice, a security review rubric, and an explicit coverage/out-of-scope map.
 - Lesson-check progress is saved in the current browser.
 - The original task board remains available at **Practice tracker** for creating tasks, checking off steps, saving notes, and tracking status.
-- Workflow screenshots are reused from the supplied presentation. Account values and feature availability shown in screenshots are examples, not fixed limits or guarantees.
+- Screenshots reused from the supplied presentation are historical references; their client/version/capture date is not always recorded. Current concepts use text-based diagrams and official documentation instead of presenting those screenshots as current UI instructions.
 - Production builds are course-only: the task tracker and its unauthenticated write API remain available only in local development.
+
+## Course feedback and scope
+
+- [Site feedback and remediation status](./docs/site-feedback.md)
+- [Example coverage audit](./docs/example-coverage-audit.md)
 
 ## Free static deployment
 
@@ -39,6 +45,8 @@ This repository includes working examples of several setup-file topics:
 - [.github/instructions/](./.github/instructions/) — Java, React, and
   TypeScript file-pattern instructions
 - [overview.md](./overview.md) — architecture and API map
+- [docs/site-feedback.md](./docs/site-feedback.md) — user-provided course audit and remediation checklist
+- [docs/example-coverage-audit.md](./docs/example-coverage-audit.md) — topic inventory, example levels, and acceptance gates
 - [.github/skills/authoring-guidance-files/SKILL.md](./.github/skills/authoring-guidance-files/SKILL.md) —
   a reusable workflow for creating guidance files
 
@@ -122,7 +130,10 @@ to test a different frontend URL.
 ## Structure
 
 - `frontend/src/data/course.ts` — course lessons and source-slide references
+- `frontend/src/data/lesson-exercises.ts` — scoped lesson prompts, outcomes, validation steps, and references
+- `frontend/src/data/lab.ts` — progressive lab exercises, assessment rubric, and topic coverage map
 - `frontend/src/pages/` — learning path, lessons, slide index, task board, and task forms
+- `frontend/src/pages/DeveloperLabPage.tsx` — hands-on assessment and governance lab
 - `frontend/src/components/CourseVisual.tsx` — accessible course diagrams and presentation screenshots
 - `frontend/src/api/tasks.ts` — typed REST API client
 - `backend/src/main/java/com/example/training/tasks/` — controller, service, repository, and entity

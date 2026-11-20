@@ -178,6 +178,148 @@ button, input, textarea, select { font: inherit; }
   font-size: 14px;
   line-height: 1.6;
 }
+.learning-outcomes, .current-documents {
+  margin: 0 0 34px;
+  padding: 21px;
+  border: 1px solid #d5dfeb;
+  border-radius: 12px;
+  background: #fff;
+}
+.learning-outcomes {
+  display: grid;
+  grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+  gap: 24px;
+  align-items: center;
+}
+.learning-outcomes h2, .current-documents h2 {
+  margin: 0 0 8px;
+  color: #1b2c47;
+  font-size: 21px;
+}
+.learning-outcomes p, .current-documents p { margin: 0; color: #4a5b74; font-size: 14px; line-height: 1.6; }
+.learning-outcomes .scope-map-link { margin-top: 11px; font-weight: 700; }
+.learning-outcomes ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 20px;
+  margin: 0;
+  padding-left: 20px;
+  color: #344760;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.current-documents h2 { font-size: 19px; }
+.current-documents > p { margin-bottom: 12px; }
+.current-documents ul { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 0; padding: 0; list-style: none; }
+.current-documents li a { font-size: 14px; font-weight: 650; }
+.slide-next-steps {
+  margin-top: 24px;
+  padding: 22px;
+  border-radius: 12px;
+  color: #fff;
+  background: #17385f;
+}
+.slide-next-steps .eyebrow { color: #d3e6f8; }
+.slide-next-steps h2 { margin: 0 0 10px; font-size: 21px; }
+.slide-next-steps ul { display: grid; gap: 7px; margin: 0 0 16px; padding-left: 22px; color: #e7f0f9; font-size: 14px; line-height: 1.55; }
+.slide-next-steps .button-primary { color: #123766; background: #fff; }
+.lab-intro { max-width: 860px; }
+.lab-intro .button-link { margin-top: 8px; }
+.lab-safety, .lab-workflow, .lab-command-card, .lab-governance, .lab-assessment, .lab-measurement, .lab-coverage {
+  margin: 0 0 24px;
+  padding: 22px;
+  border: 1px solid #d5dfeb;
+  border-radius: 12px;
+  background: #fff;
+}
+.lab-safety { border-left: 5px solid #b87015; background: #fffaf0; }
+.lab-workflow { border-top: 4px solid #3479a2; }
+.lab-governance { border-left: 5px solid #526c8c; background: #f7f9fc; }
+.lab-safety h2, .lab-workflow h2, .lab-command-card h2, .lab-governance h2, .lab-section-heading h2, .lab-assessment h2, .lab-measurement h2, .lab-coverage h2 {
+  margin: 0 0 10px;
+  color: #1b3555;
+  font-size: 22px;
+  line-height: 1.3;
+}
+.lab-safety ul, .lab-command-card ul, .lab-governance ul, .lab-exercise-card ul, .lab-rubric, .lab-coverage ul {
+  display: grid;
+  gap: 8px;
+  padding-left: 22px;
+  color: #40536c;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.lab-safety p, .lab-workflow p, .lab-command-card p, .lab-governance p, .lab-section-heading > p:last-child, .lab-assessment p, .lab-measurement p, .lab-coverage > p:last-of-type {
+  color: #40536c;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.lab-workflow ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: workflow;
+}
+.lab-workflow li {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+  padding: 14px;
+  border: 1px solid #d5dfeb;
+  border-radius: 9px;
+  background: #f8fafc;
+  counter-increment: workflow;
+}
+.lab-workflow li::before { content: counter(workflow); color: #174f91; font-weight: 800; }
+.lab-workflow li strong { color: #17385f; }
+.lab-workflow li span { color: #465a72; font-size: 13px; line-height: 1.5; }
+.lab-command-card code, .lab-exercise-card pre {
+  overflow-wrap: anywhere;
+}
+.lab-section-heading { margin: 34px 0 16px; }
+.lab-exercise-list { display: grid; gap: 16px; margin: 0; padding: 0; list-style: none; }
+.lab-exercise-card {
+  min-width: 0;
+  padding: 21px;
+  border: 1px solid #cbd9e9;
+  border-radius: 12px;
+  background: #fff;
+  scroll-margin-top: 20px;
+}
+.lab-exercise-card .eyebrow { color: #1c6b53; }
+.lab-exercise-card h3 { margin: 0 0 12px; color: #17385f; font-size: 20px; line-height: 1.35; }
+.lab-exercise-card h4 { margin: 19px 0 7px; color: #1b3555; font-size: 15px; }
+.lab-exercise-card > p:not(.eyebrow) { color: #40536c; font-size: 14px; line-height: 1.6; }
+.lab-surface { padding: 10px 12px; border-radius: 7px; background: #edf4fb; }
+.lab-exercise-card pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 14px;
+  overflow-x: auto;
+  border-radius: 8px;
+  color: #f4f7fb;
+  background: #17243b;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.lab-exercise-card > ul { margin-bottom: 0; }
+.lab-reference-links { margin: 16px 0 0; }
+.lab-assessment-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.lab-assessment-grid article { padding: 15px; border: 1px solid #d5dfeb; border-radius: 9px; background: #f8fafc; }
+.lab-assessment-grid h3 { margin: 0 0 8px; color: #1b3555; font-size: 16px; }
+.lab-assessment-grid p { margin: 0; font-size: 13px; }
+.lab-assessment > h3 { margin: 20px 0 8px; color: #1b3555; font-size: 16px; }
+.lab-rubric { margin-bottom: 0; }
+.lab-coverage ul { list-style: none; padding: 0; }
+.lab-coverage li { display: grid; grid-template-columns: minmax(170px, .7fr) 1.3fr; gap: 12px; align-items: baseline; padding: 11px 12px; border-radius: 7px; background: #f5f8fc; }
+.coverage-status { color: #15582f; font-weight: 700; }
+.coverage-status.out-of-scope { color: #6d4b14; }
+.lab-footer { display: flex; flex-wrap: wrap; gap: 10px; }
 .course-sections { display: grid; gap: 36px; }
 .course-section-header { margin: 0 2px 16px; }
 .course-section-header .eyebrow { margin-bottom: 5px; }
@@ -291,6 +433,19 @@ button, input, textarea, select { font: inherit; }
   line-height: 1.15;
 }
 .lesson-summary { max-width: 750px; margin: 12px 0 0; color: #445871; font-size: 17px; line-height: 1.6; }
+.surface-note {
+  display: grid;
+  gap: 5px;
+  margin: 14px 0 0;
+  padding: 11px 13px;
+  border-left: 4px solid #3479a2;
+  border-radius: 0 7px 7px 0;
+  color: #30455f;
+  background: #eaf3fa;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.surface-note span { color: #53647b; font-size: 13px; }
 .completion-note {
   width: fit-content;
   margin: 14px 0 0;
@@ -451,6 +606,42 @@ button, input, textarea, select { font: inherit; }
 .scenario-steps dt { margin-bottom: 7px; color: #17385f; font-size: 14px; font-weight: 750; }
 .scenario-steps dd { margin: 0; color: #40536c; font-size: 14px; line-height: 1.55; }
 
+.applied-exercise, .lesson-resources {
+  margin: 0 0 24px;
+  padding: 21px;
+  border: 1px solid #c9d8e9;
+  border-radius: 12px;
+  background: #fff;
+}
+.applied-exercise { border-left: 5px solid #1c6b53; }
+.applied-exercise .eyebrow { color: #1c6b53; }
+.applied-exercise h2, .lesson-resources h2 {
+  margin: 0 0 10px;
+  color: #1a3557;
+  font-size: 21px;
+  line-height: 1.35;
+}
+.applied-exercise h3 { margin: 18px 0 7px; color: #1b3555; font-size: 15px; }
+.applied-exercise p, .lesson-resources p { color: #40536c; font-size: 14px; line-height: 1.6; }
+.applied-exercise pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 14px;
+  overflow-x: auto;
+  border-radius: 8px;
+  color: #f4f7fb;
+  background: #17243b;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.applied-exercise ul, .lesson-resources ul { display: grid; gap: 7px; padding-left: 22px; color: #40536c; line-height: 1.55; }
+.lesson-resources { background: #f8fafc; }
+.lesson-resources p { margin: 0 0 10px; }
+.lesson-resources ul { margin: 0; }
+.lesson-resources li a { font-size: 14px; }
+
 .knowledge-check {
   margin: 0 0 24px;
   padding: 22px;
@@ -548,6 +739,12 @@ button, input, textarea, select { font: inherit; }
   .course-progress { max-width: none; }
   .learning-intro, .course-section-header { align-items: flex-start; flex-direction: column; gap: 9px; }
   .learning-intro { margin-top: 32px; }
+  .learning-outcomes { grid-template-columns: 1fr; gap: 12px; }
+  .learning-outcomes ul { grid-template-columns: 1fr; }
+  .current-documents ul { display: grid; }
+  .slide-next-steps { padding: 16px; }
+  .lab-safety, .lab-workflow, .lab-command-card, .lab-governance, .lab-assessment, .lab-measurement, .lab-coverage, .lab-exercise-card { padding: 16px; }
+  .lab-workflow ol, .lab-assessment-grid, .lab-coverage li { grid-template-columns: 1fr; }
   .learning-intro h2, .course-section-header h2 { font-size: 22px; }
   .lesson-card-grid { grid-template-columns: 1fr; }
   .lesson-card-preview { min-height: 160px; }
@@ -581,7 +778,7 @@ button, input, textarea, select { font: inherit; }
   .lesson-header h1 { font-size: 31px; }
   .lesson-summary { font-size: 16px; }
   .lesson-explanation h2, .scenario-card h2, .knowledge-check h2 { font-size: 20px; }
-  .course-visual, .scenario-card, .knowledge-check, .slide-references { padding: 16px; }
+  .course-visual, .scenario-card, .knowledge-check, .slide-references, .applied-exercise, .lesson-resources { padding: 16px; }
   .visual-step-list, .visual-comparison, .visual-architecture { grid-template-columns: 1fr; }
   .visual-step { min-height: auto; }
   .visual-architecture { gap: 18px; }

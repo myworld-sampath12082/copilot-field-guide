@@ -1,4 +1,8 @@
+import { lessonEnhancements } from './lesson-exercises'
+
 export type LessonSection = 'Project setup' | 'Copilot workflow'
+
+export const courseReviewDate = 'November 20, 2026'
 
 type Scenario = {
   context: string
@@ -10,6 +14,19 @@ type Scenario = {
 type VisualStep = {
   title: string
   detail: string
+}
+
+export type LessonResource = {
+  label: string
+  url: string
+}
+
+export type LessonExercise = {
+  title: string
+  context: string
+  prompt: string
+  expected: string
+  validation: string[]
 }
 
 export type LessonVisual =
@@ -59,9 +76,12 @@ export type Lesson = {
   shortTitle: string
   summary: string
   explanation: string
+  surface: string
   scenario: Scenario
   caveat: string
   visual: LessonVisual
+  resources: LessonResource[]
+  exercise: LessonExercise
   check: {
     question: string
     options: string[]
@@ -71,13 +91,15 @@ export type Lesson = {
   slides: number[]
 }
 
+type LessonDraft = Omit<Lesson, 'surface' | 'resources' | 'exercise'>
+
 export const sourceSlides = [
   { number: 1, title: 'Project Setup Files for AI Coding Assistants', summary: 'Course opening and the setup-file topics.' },
   { number: 2, title: 'Meet Your Trainer', summary: 'Trainer introduction and program goals.' },
   { number: 3, title: 'Session Modes', summary: 'Interactive, Plan, and Autopilot collaboration modes.' },
-  { number: 4, title: 'Agent Selection', summary: 'Ask, Agent, and custom agent roles.' },
-  { number: 5, title: 'Tool Permissions', summary: 'Manual approval, Assisted, and Allow all permission settings.' },
-  { number: 6, title: 'Where Tasks Run', summary: 'Local machine, GitHub Environments, and Dev Tunnels.' },
+  { number: 4, title: 'Agent Selection', summary: 'Role names and custom agent choices are client-specific; see the lesson for current guidance.' },
+  { number: 5, title: 'Tool Permissions', summary: 'Source-slide wording is historical; see the lesson for current labels and permission guidance.' },
+  { number: 6, title: 'Where Tasks Run', summary: 'Distinguish local, Cloud, Actions, user-managed custom environments, and remote IDE workflows.' },
   { number: 7, title: 'Models and Copilot Fusion', summary: 'Choosing an individual model or using Copilot Fusion.' },
   { number: 8, title: 'Prompt Attachments', summary: 'Adding files, folders, and work-item context to a prompt.' },
   { number: 9, title: 'Dictation in VS Code', summary: 'Speech-to-text behavior on desktop and the web.' },
@@ -91,7 +113,7 @@ export const sourceSlides = [
   { number: 17, title: 'Thank You', summary: 'Closing takeaway about supported guidance files.' }
 ] as const
 
-const lessonContent: Lesson[] = [
+const lessonContent: LessonDraft[] = [
   {
     slug: 'why-setup-files',
     section: 'Project setup',
@@ -229,21 +251,21 @@ const lessonContent: Lesson[] = [
     title: 'Path-specific instructions: rules for matching files',
     shortTitle: 'Path-specific rules',
     summary: 'Use an applyTo pattern to target a file type, then confirm the feature honors it.',
-    explanation: 'Files under .github/instructions/ can use frontmatter such as applyTo to target matching paths. The pattern controls which paths match; it is not a general rule for every file. A reference document supplies context when the agent reads it. Both behaviors depend on support in the Copilot feature you use.',
+    explanation: 'Path-specific Copilot instruction files belong under .github/instructions/ and use a filename ending in .instructions.md. Frontmatter such as applyTo targets matching paths; it is not a rule for every file. The selected Copilot feature must support and include the file for it to affect a task.',
     scenario: {
-      context: 'Illustrative example from slide 14: a Java-specific instruction file targets Java source paths.',
-      youDo: 'Write a narrow applyTo pattern, then ask for a change to a matching Java file. Adapt the example rules to the real project.',
+      context: 'Illustrative example: a Java instruction file targets this repository’s backend production source.',
+      youDo: 'Use a narrow applyTo pattern, then ask for a change to a matching Java file and a non-matching TypeScript file.',
       copilotMayDo: 'Use matched rules if the feature supports path-specific instructions and includes them in its context.',
-      review: 'Test the glob against the target path, check feature support, and verify any technical rule against the codebase.'
+      review: 'Check the filename, glob match, client support, and each technical rule against this repository.'
     },
-    caveat: 'The deck example mentions SQL Server and SNS/SQS; these are illustrative examples, not claims about this demo app or every project.',
+    caveat: 'The example uses this repository’s Java/Spring Boot conventions. Do not copy rules into a different stack without verifying them.',
     visual: {
       kind: 'code-match',
-      title: 'Example pattern from the deck',
-      code: '---\napplyTo: "**/*.java"\n---\n# Java rules (illustrative)\n- Use constructor injection in Spring Boot beans.\n- Use parameterised queries for SQL Server.\n- Publish events through the shared SNS/SQS helper.',
-      matches: ['backend/src/main/java/TaskService.java', 'src/test/java/TaskServiceTest.java'],
-      doesNotMatch: ['frontend/src/App.tsx', 'README.md'],
-      caption: 'The example is illustrative. Confirm glob behavior and actual project conventions in your Copilot feature.'
+      title: 'A complete Java instruction for this repository',
+      code: '---\napplyTo: "backend/src/main/java/**/*.java"\n---\n# Java and Spring Boot guidance\n- Keep HTTP mapping in TrainingTaskController.\n- Put business rules and transactions in TrainingTaskService.\n- Use request and response DTOs.\n- Add focused JUnit tests for changed behavior.',
+      matches: ['backend/src/main/java/com/example/training/tasks/TrainingTaskService.java'],
+      doesNotMatch: ['backend/src/test/java/com/example/training/tasks/TrainingTaskServiceTest.java', 'frontend/src/App.tsx', 'README.md'],
+      caption: 'The target pattern matches production Java sources, not tests or frontend files. Verify the pattern and feature support before relying on it.'
     },
     check: {
       question: 'With applyTo: \"**/*.java\", which path is intended to match?',
@@ -288,28 +310,26 @@ const lessonContent: Lesson[] = [
   {
     slug: 'skills',
     section: 'Project setup',
-    title: 'Skills: reusable procedures loaded when relevant',
+    title: 'Skills: reviewed procedures loaded when relevant',
     shortTitle: 'Skills',
     summary: 'Package a repeatable workflow in a SKILL.md folder with optional supporting assets.',
-    explanation: 'A skill is a folder with a SKILL.md file containing YAML frontmatter and a procedure. Optional scripts, references, or assets can support it. Repository skills may live under .github/skills/ and personal skills under ~/.copilot/skills/. A feature that supports agent skills can load a skill when it is relevant; availability is not universal.',
+    explanation: 'A skill is a folder with a SKILL.md file containing YAML frontmatter and a procedure. Current GitHub documentation lists .github/skills, .claude/skills, and .agents/skills for project skills, plus ~/.copilot/skills and ~/.agents/skills for personal skills. Support depends on the Copilot surface. Skills can include scripts and other files, so inspect their contents and side effects before using them.',
     scenario: {
       context: 'Illustrative scenario: the team repeats the same release-readiness checks before each release.',
-      youDo: 'Create a focused SKILL.md with a name, a description that explains when it applies, and ordered review steps.',
+      youDo: 'Create a focused SKILL.md with a clear trigger and ordered steps; review any third-party skill, script, and network access before installing or running it.',
       copilotMayDo: 'Load and follow the procedure when a relevant request is made in a feature that supports skills.',
       review: 'Check the frontmatter, trigger description, each procedure step, and any scripts or templates before relying on the result.'
     },
-    caveat: 'Skill availability depends on the Copilot feature. A skill is not guaranteed to load for unrelated tasks.',
+    caveat: 'Supported locations and skill behavior depend on the Copilot surface. A skill is untrusted code/content until reviewed and is not guaranteed to load for unrelated tasks.',
     visual: {
-      kind: 'tree',
-      title: 'A skill folder can keep procedure and support files together',
-      lines: [
-        { depth: 0, title: '.github/skills/release-checklist/', detail: 'Repository skill example from the deck.' },
-        { depth: 1, title: 'SKILL.md', detail: 'Name, description, and steps.' },
-        { depth: 1, title: 'scripts/', detail: 'Optional helper scripts.' },
-        { depth: 1, title: 'references/', detail: 'Optional longer reference material.' },
-        { depth: 1, title: 'assets/', detail: 'Optional templates.' }
+      kind: 'comparison',
+      title: 'Documented project and personal skill locations',
+      items: [
+        { title: 'Project skills', detail: '.github/skills/, .claude/skills/, or .agents/skills/ in a repository, where supported.' },
+        { title: 'Personal skills', detail: '~/.copilot/skills/ or ~/.agents/skills/ for the current user, where supported.' },
+        { title: 'Review first', detail: 'Inspect SKILL.md, scripts, references, and assets; check for file writes, network use, and unsupported claims.' }
       ],
-      caption: 'The folder layout and release-checklist example come from slide 15.'
+      caption: 'Locations and loading support vary by surface. Follow the current Agent skills documentation for the client you use.'
     },
     check: {
       question: 'What makes a procedure a skill in the deck’s description?',
@@ -334,16 +354,19 @@ const lessonContent: Lesson[] = [
     },
     caveat: 'The sequence is a documentation pattern, not a promise that every file is automatically loaded or supported on every Copilot surface.',
     visual: {
-      kind: 'steps',
-      title: 'A project setup sequence',
-      steps: [
-        { title: 'README.md', detail: 'Purpose, setup, run, and test commands.' },
-        { title: 'AGENTS.md', detail: 'Standing agent rules and links to useful references.' },
-        { title: 'Scoped instructions', detail: 'Rules for matching Java, SQL, or test paths.' },
-        { title: 'Architecture docs', detail: 'Components, queues, data flow, and database ownership.' },
-        { title: 'Skills', detail: 'Repeatable procedures such as release checks.' }
+      kind: 'tree',
+      title: 'Repository guidance has different audiences and scopes',
+      lines: [
+        { depth: 0, title: 'Repository root/', detail: 'Start with files that help people and supported Copilot features.' },
+        { depth: 1, title: 'README.md', detail: 'Human setup, run, and test instructions.' },
+        { depth: 1, title: 'AGENTS.md', detail: 'Agent guidance whose location and nearest applicable file matter.' },
+        { depth: 1, title: '.github/copilot-instructions.md', detail: 'Repository-wide Copilot guidance where the selected feature supports it.' },
+        { depth: 1, title: '.github/instructions/java.instructions.md', detail: 'Java rules match the configured backend source paths.' },
+        { depth: 2, title: 'backend/src/main/...', detail: 'Example target path for the Java-scoped instruction.' },
+        { depth: 1, title: '.github/skills/.../SKILL.md', detail: 'A reviewed repeatable procedure for relevant supported tasks.' },
+        { depth: 1, title: 'overview.md', detail: 'Architecture reference to read and verify against source.' }
       ],
-      caption: 'This sequence summarizes slide 16; file support still depends on the selected feature and session.'
+      caption: 'Original scope diagram. No file is guaranteed to load for every client or task; check the current support matrix and verify the matching path.'
     },
     check: {
       question: 'Which is the most accurate takeaway from the setup sequence?',
@@ -368,10 +391,14 @@ const lessonContent: Lesson[] = [
     },
     caveat: 'Available mode labels and behavior can depend on the Copilot client and configuration. Mode does not by itself grant tool permissions.',
     visual: {
-      kind: 'screenshots',
-      title: 'Mode choices shown in the presentation',
-      images: [{ src: '/deck/slide-03.png', alt: 'Copilot mode menu showing Interactive, Plan, and Autopilot, with Autopilot selected.', label: 'Slide 3 · Session Modes' }],
-      caption: 'Screenshot from the presentation. Autopilot is shown as working within permissions.'
+      kind: 'comparison',
+      title: 'Three collaboration patterns in the source deck',
+      items: [
+        { title: 'Interactive', detail: 'Keep a back-and-forth loop and guide the next step as work proceeds.' },
+        { title: 'Plan', detail: 'Ask for a plan before implementation; verify whether the selected client pauses for approval.' },
+        { title: 'Autopilot', detail: 'Allow a bounded task to proceed more autonomously, subject to client controls and policy.' }
+      ],
+      caption: 'Original conceptual diagram for readability. The supplied slide 3 screenshot is available as a historical reference; its client and capture date are not recorded.'
     },
     check: {
       question: 'What does Plan mode change according to the deck?',
@@ -386,54 +413,62 @@ const lessonContent: Lesson[] = [
     section: 'Copilot workflow',
     title: 'Agent selection: choose a role for the task',
     shortTitle: 'Agent selection',
-    summary: 'Ask is read-only research; Agent can edit and validate; custom profiles depend on setup.',
-    explanation: 'The agent picker selects a role. Ask answers questions and researches with read-only tools; it does not edit files or run state-changing commands. Agent can find relevant code, edit files, run commands, and validate changes. Custom agents may have specialized instructions and tools, depending on your setup. The session mode controls how the session proceeds.',
+    summary: 'Choose a supported read-only or editing role; names and capabilities vary by client.',
+    explanation: 'Agent roles and modes are client-specific. In a client that offers separate read-only and editing roles, use the read-only role to investigate without changing files and the editing role only when you want implementation. Other clients, including the GitHub Copilot app, may present different role or mode choices. Custom agents can add specialized instructions and tools, so inspect their configuration before relying on them.',
     scenario: {
       context: 'Illustrative scenario: first investigate a failing test, then decide whether a code change is needed.',
-      youDo: 'Use Ask for read-only investigation. If you want an implementation, choose a role that can edit and specify what should be changed.',
-      copilotMayDo: 'Ask can explain findings without changing state; Agent can propose edits, run commands, and validate.',
+      youDo: 'Check the selected client’s current documentation and choose a read-only workflow for investigation. If you want implementation, choose a role that can edit and specify what should be changed.',
+      copilotMayDo: 'A read-only role can explain findings without changing state; an editing role can propose changes or run tools, subject to its permissions.',
       review: 'Check the selected role, tools used, changes, and validation output. Redirect the work when needed.'
     },
-    caveat: 'Custom agent profiles and their tools depend on your setup. Agent role is separate from session mode and tool permissions.',
+    caveat: 'The source screenshot does not identify its client or version. Role labels and behavior vary; do not assume Ask/Agent choices exist or behave the same way in every client. Role, session mode, and tool permissions are separate controls.',
     visual: {
-      kind: 'screenshots',
-      title: 'Role picker shown in the presentation',
-      images: [{ src: '/deck/slide-04.png', alt: 'Agent picker showing Agent, Ask, and a list of custom agent profiles.', label: 'Slide 4 · Agent Selection' }],
-      caption: 'The picker selects a role; the mode controls how the session proceeds.'
+      kind: 'comparison',
+      title: 'Choose a role based on the work and available tools',
+      items: [
+        { title: 'Ask', detail: 'Use a supported read-only question/research role to inspect and explain before requesting edits.' },
+        { title: 'Agent', detail: 'Use an editing role only when the task needs file changes or commands and you can review the result.' },
+        { title: 'Custom profile', detail: 'A repository or user-defined agent may add specialized instructions and tools; inspect its configuration.' }
+      ],
+      caption: 'Original concept diagram for readability. The slide 4 source screenshot is available as a historical reference; it does not identify its client/version.'
     },
     check: {
-      question: 'Which role does the deck describe as read-only?',
-      options: ['Ask', 'Agent', 'A custom agent in every setup'],
+      question: 'According to the source slide, which named role is presented as read-only?',
+      options: ['Ask in the source slide’s client', 'Agent', 'A custom agent in every setup'],
       correctAnswer: 0,
-      explanation: 'Ask uses read-only tools and does not edit files or run state-changing commands.'
+      explanation: 'The source deck labels Ask as read-only; verify that this role and its tools exist in the client you use.'
     },
     slides: [4]
   },
   {
     slug: 'tool-permissions',
     section: 'Copilot workflow',
-    title: 'Tool permissions: decide when approval is requested',
+    title: 'Tool permissions: choose when tools need approval',
     shortTitle: 'Tool permissions',
-    summary: 'Permission settings control approval prompts and remain separate from session mode.',
-    explanation: 'Manual approval asks before using a tool that requires permission. Assisted lets a model assess eligible requests, approving those it judges safe and asking about requests that still need approval. Allow all runs tools without asking each time, but organization policy or the session environment can restrict it. Permissions are separate from the selected mode.',
+    summary: 'Ask every time, Assisted, and Approve all control tool approvals separately from session mode.',
+    explanation: 'In the documented Copilot app, Ask every time requests your approval before a tool runs. Assisted can approve eligible requests based on a safety assessment and asks you about others. Approve all skips individual approval prompts for supported tools, but policy and feature restrictions still apply. These are tool-approval settings, not session modes.',
     scenario: {
       context: 'Illustrative scenario: an autonomous session wants to run a command that changes files.',
-      youDo: 'Choose a permission setting that matches your risk tolerance and inspect any request that still asks for approval.',
-      copilotMayDo: 'Ask, be assisted, or run without asking for each approval, depending on the setting and applicable policy.',
-      review: 'Read the command and its likely effects before approving; confirm organization and environment restrictions.'
+      youDo: 'Choose the least-permissive setting that still supports the task. Prefer Ask every time when you need to inspect each command.',
+      copilotMayDo: 'Request approval, automatically approve eligible actions, or skip per-action prompts according to the selected setting.',
+      review: 'Read the command and its likely effects; do not infer that a mode or approval setting makes a command safe.'
     },
-    caveat: 'Assisted approval applies to eligible requests and relies on a model assessment. Allow all may be restricted by organization policy or the environment.',
+    caveat: 'Labels and eligible actions vary by product surface and policy. Assisted is not a guarantee of safety; review tool actions and use least privilege.',
     visual: {
-      kind: 'screenshots',
-      title: 'Permission choices shown in the presentation',
-      images: [{ src: '/deck/slide-05.png', alt: 'Permissions menu showing Manual permissions, Assisted permissions, and Allow all.', label: 'Slide 5 · Tool Permissions' }],
-      caption: 'The screenshot distinguishes permission settings from the session mode.'
+      kind: 'comparison',
+      title: 'Current approval choices in the Copilot app',
+      items: [
+        { title: 'Manual approval (Ask every time)', detail: 'Ask you before running a tool that requires approval.' },
+        { title: 'Assisted', detail: 'Approve eligible actions automatically and ask about actions that still need your decision.' },
+        { title: 'Unconditional approval (Approve all)', detail: 'Skip individual approval prompts for supported tools; this increases risk and does not override policy.' }
+      ],
+      caption: 'Original explanatory diagram based on current documentation, not a product screenshot. The supplied slide uses historical labels; see the original image only as a source-deck reference.'
     },
     check: {
-      question: 'Does selecting Autopilot automatically mean Allow all?',
-      options: ['Yes. Mode and permissions are one setting.', 'No. Mode and tool permissions are separate controls.'],
+      question: 'Which setting should you choose when you want to inspect each command before it runs?',
+      options: ['Approve all', 'Ask every time', 'Autopilot, because it changes tool permissions'],
       correctAnswer: 1,
-      explanation: 'The presentation states that session mode and tool permissions are separate.'
+      explanation: 'Ask every time requests approval for each action that requires it. Session mode and tool approval are separate controls.'
     },
     slides: [5]
   },
@@ -442,26 +477,32 @@ const lessonContent: Lesson[] = [
     section: 'Copilot workflow',
     title: 'Where tasks run: identify the host and project folder',
     shortTitle: 'Task environment',
-    summary: 'Local machine, GitHub Environments, and Dev Tunnels use different hosts and access paths.',
-    explanation: 'The environment determines which host and project folder the agent uses. A local session uses a folder on the current computer and its available tools. GitHub Environments can continue sessions across supported Copilot clients after registering a development machine; this feature is in preview. Dev Tunnels connect a session to a remote host through an active tunnel and require sign-in on the tunnel.',
+    summary: 'Choose the actual local, cloud-agent, custom, or remote host supported by your Copilot client.',
+    explanation: '“Where the task runs” is a client-specific choice, not one universal Copilot environment menu. A local session runs on your machine; a Cloud session uses a GitHub-hosted sandbox; an Actions session runs in a GitHub Actions job; and a custom environment is a Linux machine or Codespace you register and manage as a Copilot host. A VS Code remote host or tunnel is a separate workflow. These terms describe different features and must not be used interchangeably.',
     scenario: {
-      context: 'Illustrative scenario: you want a session to use a development host that is not your current computer.',
-      youDo: 'Select the supported remote environment, confirm the repository folder, and verify the host or tunnel is available and authenticated.',
-      copilotMayDo: 'Work on the selected host and folder, rather than the current machine.',
-      review: 'Check host identity and project path. Keep a remote host online and reachable; sign in to a Dev Tunnel.'
+      context: 'Illustrative scenario: you need a cloud coding agent to use the repository’s build tools, or you need a Windows/self-hosted runner.',
+      youDo: 'Choose Cloud for a GitHub-hosted sandbox unless the task needs Actions-only setup such as a Windows environment or custom runner. Register a custom environment only when you intend to manage its machine, tools, and lifecycle.',
+      copilotMayDo: 'Run in a GitHub-hosted sandbox, an Actions job, or a registered custom host according to the selected environment.',
+      review: 'Verify the host, repository, branch, dependencies, network access, credential scope, billing, and how to stop the session. Do not assume a local Dev Tunnel is required by a cloud agent.'
     },
-    caveat: 'GitHub Environments are in preview in the deck. Remote sessions depend on the selected host, folder, and connectivity.',
+    caveat: '“GitHub Environments” and its Preview badge are source-deck terms; the screenshot capture date is unknown. Cloud and Actions are distinct; custom environments are user-managed Linux machines or Codespaces, not Actions setup steps. Cloud sandbox usage is billed by compute, memory, and storage. Verify current options and billing for your account.',
     visual: {
-      kind: 'screenshots',
-      title: 'Environment choices shown in the presentation',
-      images: [{ src: '/deck/slide-06.png', alt: 'Environment menu showing Local machine, GitHub Environments marked Preview, and Dev Tunnels.', label: 'Slide 6 · Where Tasks Run' }],
-      caption: 'GitHub Environments are marked Preview in the presentation; Dev Tunnels require sign-in.'
+      kind: 'comparison',
+      title: 'Map the task to the environment it actually uses',
+      items: [
+        { title: 'Local IDE workspace', detail: 'The selected editor works with a local repository and local tools.' },
+        { title: 'Cloud', detail: 'A GitHub-hosted sandbox runs the session; usage is billed by compute, memory, and storage.' },
+        { title: 'Actions', detail: 'A GitHub Actions job runs the session; use it for Actions-only setup, Windows, or custom runners.' },
+        { title: 'Custom environment', detail: 'A registered Linux machine or Codespace runs copilotd; you manage its tools, workspace, and lifecycle.' },
+        { title: 'Remote IDE or tunnel', detail: 'A VS Code remote host/tunnel is a separate workflow; use it only when the selected client and task require it.' }
+      ],
+      caption: 'Original terminology map, not a screenshot. The original slide 6 image is retained as a historical reference; its client and capture date are not documented.'
     },
     check: {
-      question: 'What should you verify before a remote session?',
-      options: ['The selected host and project folder are correct and the host is reachable.', 'Only the model name; host and folder do not matter.'],
+      question: 'When should you choose an Actions environment instead of Cloud?',
+      options: ['When the task requires Actions-only setup, such as a Windows environment or custom runner.', 'Whenever a repository has a README file.'],
       correctAnswer: 0,
-      explanation: 'The deck says remote sessions use the selected host and folder and that the host must remain online and reachable.'
+      explanation: 'GitHub documents Actions for custom setup steps, larger or self-hosted runners, and Windows development environments; Cloud is the default otherwise.'
     },
     slides: [6]
   },
@@ -470,15 +511,15 @@ const lessonContent: Lesson[] = [
     section: 'Copilot workflow',
     title: 'Models and Copilot Fusion: choose or coordinate models',
     shortTitle: 'Models & Fusion',
-    summary: 'Select an individual model or use Fusion when available, and keep usage in view.',
-    explanation: 'You can choose an individual model when you need its capabilities or want to compare usage. Available models depend on plan, client, and organization policy. Copilot Fusion can select one model or coordinate multiple models and workflows. Standard, High, and Max effort levels are available when offered to your account. Fusion can use multiple model calls, so check the current plan and usage details.',
+    summary: 'Select an individual model or use Fusion when available; check effort options, plan, and usage.',
+    explanation: 'You can choose an individual model when you need its capabilities or want to compare usage. Available models depend on plan, client, and organization policy. Copilot Fusion can select one model or coordinate multiple models and workflows. Standard, High, and Max effort levels are available when offered to your account; Fusion Fast is not a generally selectable effort level and is currently limited to VS Code inline chat. Fusion can use multiple model calls, so check the current plan and usage details.',
     scenario: {
       context: 'Illustrative scenario: compare approaches for a multi-step task with an account that offers both model selection and Fusion.',
-      youDo: 'Choose a specific model if you need to target its capabilities, or choose Fusion if you want it to select or coordinate models. Check the offered effort levels.',
+      youDo: 'Choose a specific model if you need to target its capabilities, or choose Fusion if you want it to select or coordinate models. Check the offered effort levels and whether a Fast option is specifically available in VS Code inline chat.',
       copilotMayDo: 'Use the selected model or, with Fusion, select one or coordinate multiple models and workflows.',
       review: 'Check which options your account actually offers, review the result, and monitor current plan and usage details.'
     },
-    caveat: 'Model availability and effort levels depend on plan, client, and organization policy. Fusion may use multiple calls; it is not a promise of a particular result or usage amount.',
+    caveat: 'Model availability and effort levels depend on plan, client, and organization policy. Fusion Fast is not generally selectable outside VS Code inline chat. Fusion may use multiple calls; it is not a promise of a particular result or usage amount.',
     visual: {
       kind: 'screenshots',
       title: 'Model and Fusion controls shown in the presentation',
@@ -486,7 +527,7 @@ const lessonContent: Lesson[] = [
         { src: '/deck/slide-07-models.png', alt: 'Model picker showing Copilot Fusion and model choices, some marked as requiring an upgrade.', label: 'Slide 7 · Model picker' },
         { src: '/deck/slide-07-fusion.png', alt: 'Copilot Fusion settings showing Standard, High, and Max effort levels, with Standard selected.', label: 'Slide 7 · Fusion effort' }
       ],
-      caption: 'Screenshots show one account at capture time. Availability and controls can vary.'
+      caption: 'Historical source-deck screenshots; the capture date and client are unknown. Availability and controls vary, so use current documentation instead of copying the pictured UI.'
     },
     check: {
       question: 'What should you remember when using Copilot Fusion?',
@@ -514,7 +555,7 @@ const lessonContent: Lesson[] = [
       kind: 'screenshots',
       title: 'Attachment picker shown in the presentation',
       images: [{ src: '/deck/slide-08.png', alt: 'Attachment picker listing files, files and folders, GitHub issues, pull requests, and sessions.', label: 'Slide 8 · Prompt Attachments' }],
-      caption: 'The picker options in the screenshot are examples; availability varies by client and context.'
+      caption: 'Historical source-deck screenshot; the capture date is unknown. Picker options vary by client and context.'
     },
     check: {
       question: 'What is the best step before sending a prompt with attachments?',
@@ -530,7 +571,7 @@ const lessonContent: Lesson[] = [
     title: 'Dictation: speak into the chat composer',
     shortTitle: 'Dictation',
     summary: 'Dictation behavior and audio handling differ between supported desktop platforms and the web.',
-    explanation: 'Built-in dictation converts speech to text in the chat composer. On supported desktop platforms, the built-in speech model is downloaded on first use and transcription then runs on-device; dictated text stays in the composer until submission. In VS Code for the Web, audio is sent to Microsoft’s AI voice service for transcription. If language-model cleanup is enabled, transcript text is separately sent to a Copilot model.',
+    explanation: 'Built-in dictation converts speech to text in the chat composer. The on-device desktop model is supported on Windows x64/Arm64, macOS Apple silicon, and Linux x64/Arm64 with glibc 2.34 or later; after its first download, transcription runs locally. In VS Code for the Web, audio is sent to Microsoft’s AI voice service and requires network access and GitHub sign-in. If language-model cleanup is enabled, transcript text is separately sent to a Copilot model.',
     scenario: {
       context: 'Illustrative scenario: dictate a short task description while using the chat composer.',
       youDo: 'Use dictation if available, then read and correct the transcript in the composer before you submit it.',
@@ -542,7 +583,7 @@ const lessonContent: Lesson[] = [
       kind: 'screenshots',
       title: 'Dictation control shown in the presentation',
       images: [{ src: '/deck/slide-09.png', alt: 'VS Code chat composer with the dictation microphone control highlighted and a speech-to-text tooltip.', label: 'Slide 9 · Dictation' }],
-      caption: 'The screenshot shows the composer control; the slide describes different desktop and web processing paths.'
+      caption: 'Historical VS Code screenshot; the capture date is unknown. The slide describes different desktop and web processing paths.'
     },
     check: {
       question: 'According to the deck, what happens to dictated text before submission?',
@@ -565,12 +606,12 @@ const lessonContent: Lesson[] = [
       copilotMayDo: 'Use available codebase context and suggestion settings according to the client’s current state.',
       review: 'Treat usage and reset information as account-specific and changing; check whether session sync is enabled before relying on its behavior.'
     },
-    caveat: 'The slide screenshot shows Copilot Free at one point in time. Its usage numbers and reset date are not fixed plan limits. Session sync is experimental.',
+    caveat: 'The screenshot capture date and extension version are unknown. Its usage values and reset date are historical examples, not current plan limits. Check current documentation for session-sync availability and data handling.',
     visual: {
       kind: 'screenshots',
       title: 'Status panel shown in the presentation',
       images: [{ src: '/deck/slide-10.png', alt: 'Copilot status panel with account usage, inline suggestions, codebase semantic index marked out of date, and session sync not enabled.', label: 'Slide 10 · Usage and Status' }],
-      caption: 'Captured account values are examples only; percentages and reset dates vary over time and by account.'
+      caption: 'Historical VS Code screenshot; capture date and extension version are unknown. Account values are examples only, not current plan limits.'
     },
     check: {
       question: 'What does an out-of-date semantic index mean according to the deck?',
@@ -583,9 +624,15 @@ const lessonContent: Lesson[] = [
 ]
 
 export const lessons: Lesson[] = [
-  ...lessonContent.filter(lesson => lesson.section === 'Copilot workflow'),
-  ...lessonContent.filter(lesson => lesson.section === 'Project setup')
+  ...lessonContent.filter(lesson => lesson.section === 'Copilot workflow').map(addLessonEnhancements),
+  ...lessonContent.filter(lesson => lesson.section === 'Project setup').map(addLessonEnhancements)
 ]
+
+function addLessonEnhancements(lesson: LessonDraft): Lesson {
+  const enhancement = lessonEnhancements[lesson.slug]
+  if (!enhancement) throw new Error(`Missing practical content for lesson "${lesson.slug}"`)
+  return { ...lesson, ...enhancement }
+}
 
 export function getLesson(slug: string | undefined) {
   return lessons.find(lesson => lesson.slug === slug)
